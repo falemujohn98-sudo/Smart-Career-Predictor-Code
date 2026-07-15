@@ -4,8 +4,7 @@ ENV PYTHONUNBUFFERED=True
 
 WORKDIR /app
 
-# Copy requirements from backend folder
-COPY requirements.txt .
+COPY backend/requirements.txt .
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential gcc g++ \
@@ -17,5 +16,4 @@ COPY . .
 
 ENV PYTHONPATH=/app
 
-# Run the application
-CMD ["sh", "-c", "exec uvicorn fastapi_integration.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "exec uvicorn backend.fastapi_integration.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
