@@ -12,6 +12,8 @@
 <title>Smart Career Predictor</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -895,12 +897,14 @@ select.inp option{background:var(--sf2);}
 </div>
 
 <script>
+
+
 /* ============================================================
    SMART CAREER PREDICTOR — Full JavaScript (Integrated Backend Version)
    ============================================================ */
-
+  
 /* ── App State ── */
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "https://smart-career-predictor-code.onrender.com";
 
 const APP = {
   user: { name:'', email:'', phone:'', dob:'', gender:'', password:'' },
