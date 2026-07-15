@@ -2,7 +2,6 @@ import os
 import sys
 import logging
 from pathlib import Path
-from google import genai
 from dotenv import load_dotenv
 
 # Ensure project root (ml/) is on sys.path for cross-package imports
@@ -16,9 +15,41 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+# Prefer the modern Google GenAI package, but fall back to the deprecated google-generativeai API
+genai = None
+genai_client = None
+_genai_is_modern = False
+_genai_supports_generative_model = False
+
+try:
+    import google.genai as _genai
+    genai = _genai
+    _genai_is_modern = hasattr(genai, "Client")
+    _genai_supports_generative_model = hasattr(genai, "GenerativeModel")
+except Exception:
+    try:
+        import google.generativeai as _genai
+        genai = _genai
+        _genai_is_modern = False
+        _genai_supports_generative_model = hasattr(genai, "GenerativeModel")
+    except Exception:
+        logger.warning("Google Generative AI client library is not installed or cannot be imported.")
+
 GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
-if GEMINI_API_KEY:
-    genai.Client(api_key=GEMINI_API_KEY)
+if GEMINI_API_KEY and genai is not None:
+    if _genai_is_modern and hasattr(genai, "Client"):
+        try:
+            genai_client = genai.Client(api_key=GEMINI_API_KEY)
+        except Exception as exc:
+            logger.warning("Failed to initialize Google GenAI client: %s", exc)
+            genai_client = None
+    elif hasattr(genai, "configure"):
+        genai.configure(api_key=GEMINI_API_KEY)
+    elif _genai_supports_generative_model:
+        # Older google-generativeai clients use model-level configuration with a global API key.
+        logger.info("Using legacy Google Generative AI client without explicit client initialization.")
+    else:
+        logger.warning("Loaded Google GenAI library but could not configure an API client.")
 
 # Define static local career recommendations for the 10 target classes
 LOCAL_CAREER_GUIDANCE = {
@@ -161,7 +192,7 @@ def generate_local_fallback(xgb_result, test_scores, profile):
 
 def gemini_final_prediction(xgb_result, test_scores, profile):
     # Try calling Google Generative AI first
-    if GEMINI_API_KEY:
+    if GEMINI_API_KEY and genai is not None:
         prompt = f"""
 You are a career guidance mentor for Nigerian secondary school students (JSS–SSS level).
 
@@ -189,8 +220,14 @@ Be extremely encouraging. Speak directly to the student.
 """
         for model_name in ["gemini-2.0-flash", "gemini-1.5-flash"]:
             try:
-                model = genai.GenerativeModel(model_name)
-                response = model.generate_content(prompt)
+                if genai_client is not None:
+                    response = genai_client.models.generate_content(model=model_name, contents=prompt)
+                elif _genai_supports_generative_model and hasattr(genai, "GenerativeModel"):
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(prompt)
+                else:
+                    logger.warning("Google Generative AI library loaded, but no supported generation API is available.")
+                    break
                 text = getattr(response, "text", "") or ""
                 if text.strip():
                     return {"summary": text.strip(), "fallback_prediction": xgb_result}
