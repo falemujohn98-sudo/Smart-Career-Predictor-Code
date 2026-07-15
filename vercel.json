@@ -1,9 +1,0 @@
-{
-  "version": 2,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/smart-career-predictor.html"
-    }
-  ]
-}
