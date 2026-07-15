@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "routes": [
-    { "src": "/(.*)", "dest": "/smart-career-predictor.html" }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
-}
