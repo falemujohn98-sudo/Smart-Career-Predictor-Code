@@ -30,7 +30,7 @@ from backend.ml_models.tests.predict import predict_career   # Fixed import
 
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent.parent
-HTML_PATH = PROJECT_ROOT / "frontend" / "smart-career-predictor.html"
+HTML_PATH = PROJECT_ROOT / "frontend" / "index.html"
 
 app = FastAPI(title="Smart Career Predictor API")
 
