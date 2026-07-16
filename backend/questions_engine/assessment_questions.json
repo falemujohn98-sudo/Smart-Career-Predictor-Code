@@ -145,8 +145,8 @@
     "subject_category": "Science",
     "prompt": "If a force of 55 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "11 m/s²",
       "22 m/s²",
+      "11 m/s²",
       "5 m/s²",
       "10 m/s²"
     ],
@@ -159,10 +159,10 @@
     "subject_category": "Science",
     "prompt": "If a force of 60 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "12 m/s²",
+      "10 m/s²",
       "24 m/s²",
       "6 m/s²",
-      "10 m/s²"
+      "12 m/s²"
     ],
     "answer": "12 m/s²",
     "source": "Science Aptitude Bank"
@@ -173,9 +173,9 @@
     "subject_category": "Science",
     "prompt": "If a force of 65 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "13 m/s²",
-      "26 m/s²",
       "6 m/s²",
+      "26 m/s²",
+      "13 m/s²",
       "10 m/s²"
     ],
     "answer": "13 m/s²",
@@ -187,8 +187,8 @@
     "subject_category": "Science",
     "prompt": "If a force of 70 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "14 m/s²",
       "28 m/s²",
+      "14 m/s²",
       "7 m/s²",
       "10 m/s²"
     ],
@@ -201,9 +201,9 @@
     "subject_category": "Science",
     "prompt": "If a force of 75 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "15 m/s²",
-      "30 m/s²",
       "7 m/s²",
+      "30 m/s²",
+      "15 m/s²",
       "10 m/s²"
     ],
     "answer": "15 m/s²",
@@ -215,8 +215,8 @@
     "subject_category": "Science",
     "prompt": "If a force of 80 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "16 m/s²",
       "32 m/s²",
+      "16 m/s²",
       "8 m/s²",
       "10 m/s²"
     ],
@@ -229,10 +229,10 @@
     "subject_category": "Science",
     "prompt": "If a force of 85 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "17 m/s²",
+      "10 m/s²",
       "34 m/s²",
       "8 m/s²",
-      "10 m/s²"
+      "17 m/s²"
     ],
     "answer": "17 m/s²",
     "source": "Science Aptitude Bank"
@@ -243,8 +243,8 @@
     "subject_category": "Science",
     "prompt": "If a force of 90 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "18 m/s²",
       "36 m/s²",
+      "18 m/s²",
       "9 m/s²",
       "10 m/s²"
     ],
@@ -257,9 +257,9 @@
     "subject_category": "Science",
     "prompt": "If a force of 95 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "19 m/s²",
-      "38 m/s²",
       "9 m/s²",
+      "38 m/s²",
+      "19 m/s²",
       "10 m/s²"
     ],
     "answer": "19 m/s²",
@@ -271,10 +271,10 @@
     "subject_category": "Science",
     "prompt": "If a force of 100 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "20 m/s²",
-      "40 m/s²",
       "10 m/s²",
-      "10 m/s²"
+      "20 m/s²",
+      "30 m/s²",
+      "40 m/s²"
     ],
     "answer": "20 m/s²",
     "source": "Science Aptitude Bank"
@@ -285,10 +285,10 @@
     "subject_category": "Science",
     "prompt": "If a force of 105 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "21 m/s²",
+      "28 m/s²",
       "42 m/s²",
-      "10 m/s²",
-      "10 m/s²"
+      "36 m/s²",
+      "21 m/s²"
     ],
     "answer": "21 m/s²",
     "source": "Science Aptitude Bank"
@@ -299,9 +299,9 @@
     "subject_category": "Science",
     "prompt": "If a force of 110 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "22 m/s²",
-      "44 m/s²",
       "11 m/s²",
+      "22 m/s²",
+      "35 m/s²",
       "10 m/s²"
     ],
     "answer": "22 m/s²",
@@ -313,9 +313,9 @@
     "subject_category": "Science",
     "prompt": "If a force of 115 N acts on a mass of 5 kg, what is the acceleration?",
     "options": [
-      "23 m/s²",
-      "46 m/s²",
       "11 m/s²",
+      "46 m/s²",
+      "23 m/s²",
       "10 m/s²"
     ],
     "answer": "23 m/s²",
