@@ -1,9 +1,28 @@
+"""
+predict.py — Smart Career Predictor inference module.
+
+Feature columns MUST exactly match those used during model training
+(see backend/ml_models/training/new_model.ipynb).
+
+Training pipeline columns:
+  Numerical : age, waec_year, waec_credits, cgpa, course_alignment,
+               aptitude_score_10, cognitive_score_10, psychometric_avg_5,
+               sentiment_avg_5
+  Categorical: gender, school_type, department, academic_strength,
+               best_subject_category, confidence_level, career_influence,
+               + 22 subject grade columns (A–F / UNKNOWN)
+"""
+
+import warnings
+warnings.filterwarnings("ignore")
+
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
 
+# ── Model Loading ──────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR.parent.parent / "model_artifacts" / "xgb_best_model.pkl"
 LABEL_ENCODER_PATH = BASE_DIR.parent.parent / "model_artifacts" / "label_encoder.pkl"
@@ -11,277 +30,246 @@ LABEL_ENCODER_PATH = BASE_DIR.parent.parent / "model_artifacts" / "label_encoder
 model = joblib.load(MODEL_PATH)
 le = joblib.load(LABEL_ENCODER_PATH)
 
-def predict_career(input_data: dict):
+# ── Exact feature lists as trained ────────────────────────────────────────────
+SUBJECTS_COLS = [
+    "mathematics", "english", "civic_education", "physics", "chemistry", "biology",
+    "further_mathematics", "agricultural_science", "geography", "technical_drawing",
+    "computer_studies", "yoruba", "igbo_hausa", "data_processing",
+    "literature_in_english", "christian_religious_studies/islamic_studies",
+    "creative_arts", "economics", "financial_accounting", "commerce",
+    "government", "marketing",
+]
+
+CATEGORICAL_COLUMNS = [
+    "gender", "school_type", "department", "academic_strength",
+    "best_subject_category", "confidence_level", "career_influence",
+] + SUBJECTS_COLS
+
+NUMERICAL_COLUMNS = [
+    "age", "waec_year", "waec_credits", "cgpa", "course_alignment",
+    "aptitude_score_10", "cognitive_score_10", "psychometric_avg_5",
+    "sentiment_avg_5",
+]
+
+ALL_FEATURES = CATEGORICAL_COLUMNS + NUMERICAL_COLUMNS
+
+# Valid WAEC grade tokens
+_VALID_GRADES = {"A", "B", "C", "D", "E", "F"}
+
+# Map extended grade codes to simplified A–F
+_GRADE_ALIAS = {
+    "A1": "A", "B2": "A", "B3": "B", "C4": "B", "C5": "C", "C6": "C",
+    "D7": "D", "E8": "E", "F9": "F",
+}
+
+
+def _normalise_grade(raw) -> str:
+    """Normalise any grade value to a single uppercase letter or UNKNOWN."""
+    s = str(raw).strip().upper()
+    if s in ("NAN", "NONE", "", "NULL"):
+        return "UNKNOWN"
+    # Try aliased form first
+    if s in _GRADE_ALIAS:
+        return _GRADE_ALIAS[s]
+    # Valid single-letter grade
+    if s in _VALID_GRADES:
+        return s
+    # Truncate to first letter if multi-char (e.g., "A1" already handled above)
+    if s and s[0] in _VALID_GRADES:
+        return s[0]
+    return "UNKNOWN"
+
+
+def _build_input_df(input_data: dict) -> pd.DataFrame:
     """
-    Minimal inputs for SS1-SS3 students:
-    - Required: Gender, Department, School_Type
-    - Optional: Subject choices, aptitude scores, etc.
+    Convert the raw input dict into a DataFrame with exactly the columns
+    expected by the Pipeline, in the correct order.
     """
-    df_input = pd.DataFrame([input_data])
-    df_input.columns = (
-        df_input.columns
-        .str.strip()
-        .str.lower()
-        .str.replace(' ', '_', regex=False)
-    )
-
-    categorical_columns = [
-        "gender", "school_type", "department", "academic_strength",
-        "best_subject_category", "confidence_level", "career_influence",
-        "mathematics", "english", "civic_education", "physics", "chemistry",
-        "biology", "further_mathematics", "agricultural_science", "geography",
-        "technical_drawing", "computer_studies", "yoruba", "igbo_hausa",
-        "data_processing", "literature_in_english", "history",
-        "christian_religious_studies/islamic_studies", "french", "creative_arts",
-        "economics", "financial_accounting", "commerce", "government", "marketing"
-    ]
-
-    numerical_columns = [
-        "age", "waec_year", "waec_credits", "cgpa", "course_alignment",
-        "aptitude_score_10", "cognitive_score_10", "psychometric_avg_5",
-        "sentiment_avg_5"
-    ]
-
-    features = categorical_columns + numerical_columns
-
-    defaults = {
-        "gender": None,
-        "school_type": None,
-        "department": None,
-        "academic_strength": None,
-        "best_subject_category": None,
-        "confidence_level": None,
-        "career_influence": None,
-        "mathematics": "UNKNOWN",
-        "english": "UNKNOWN",
-        "physics": "UNKNOWN",
-        "chemistry": "UNKNOWN",
-        "biology": "UNKNOWN",
-        "further_mathematics": "UNKNOWN",
-        "agricultural_science": "UNKNOWN",
-        "geography": "UNKNOWN",
-        "technical_drawing": "UNKNOWN",
-        "computer_studies": "UNKNOWN",
-        "yoruba": "UNKNOWN",
-        "igbo_hausa": "UNKNOWN",
-        "data_processing": "UNKNOWN",
-        "literature_in_english": "UNKNOWN",
-        "christian_religious_studies/islamic_studies": "UNKNOWN",
-        "creative_arts": "UNKNOWN",
-        "economics": "UNKNOWN",
-        "financial_accounting": "UNKNOWN",
-        "commerce": "UNKNOWN",
-        "government": "UNKNOWN",
-        "marketing": "UNKNOWN",
-        "waec_credits": 5.0,
-        "cgpa": None,
-        "course_alignment": None,
-        "aptitude_score_10": None,
-        "cognitive_score_10": None,
-        "psychometric_avg_5": None,
-        "sentiment_avg_5": None,
+    # Normalise keys: strip, lowercase, replace spaces with underscores
+    raw = {
+        k.strip().lower().replace(" ", "_"): v
+        for k, v in input_data.items()
     }
 
-    for col, default_value in defaults.items():
-        if col not in df_input.columns:
-            df_input[col] = default_value
+    row = {}
 
-    grade_map = {
-        "A": 8,
-        "B": 6,
-        "C": 5,
-        "D": 3,
-        "E": 2,
-        "F": 1,
-        "UNKNOWN": 5
+    # ── Categorical: demographic / profile fields ──────────────────────────────
+    for col in ["gender", "school_type", "department", "academic_strength",
+                "best_subject_category", "confidence_level", "career_influence"]:
+        val = raw.get(col)
+        if val is None or str(val).strip().lower() in ("none", "nan", ""):
+            row[col] = None
+        else:
+            row[col] = str(val).strip()
+
+    # ── Subject grade columns ──────────────────────────────────────────────────
+    for col in SUBJECTS_COLS:
+        row[col] = _normalise_grade(raw.get(col, "UNKNOWN"))
+
+    # ── Numerical columns ──────────────────────────────────────────────────────
+    num_defaults = {
+        "age": 18,
+        "waec_year": 2024,
+        "waec_credits": 5,
+        "cgpa": 0.0,
+        "course_alignment": 0,
+        "aptitude_score_10": 5.0,
+        "cognitive_score_10": 5.0,
+        "psychometric_avg_5": 3.0,
+        "sentiment_avg_5": 3.0,
     }
+    for col, default in num_defaults.items():
+        raw_val = raw.get(col, default)
+        try:
+            row[col] = float(raw_val) if raw_val is not None else float(default)
+        except (ValueError, TypeError):
+            row[col] = float(default)
 
-    grade_cols = [
-        "mathematics", "english", "physics", "chemistry", "biology", "further_mathematics",
-        "agricultural_science", "geography", "technical_drawing", "computer_studies",
-        "yoruba", "igbo_hausa", "data_processing", "literature_in_english", "history",
-        "christian_religious_studies/islamic_studies", "french", "creative_arts",
-        "economics", "financial_accounting", "commerce", "government", "marketing"
-    ]
+    # Build DataFrame with ALL_FEATURES column order
+    df = pd.DataFrame([row], columns=ALL_FEATURES)
 
-    for col in grade_cols:
-        if col in df_input.columns:
-            df_input[col] = (
-                df_input[col]
-                .astype(str)
-                .str.strip()
-                .str.upper()
-                .map(grade_map)
-                .fillna(5)
-            )
+    # Ensure correct dtypes
+    for col in NUMERICAL_COLUMNS:
+        df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
-    for col in features:
-        if col not in df_input.columns:
-            df_input[col] = 5.0 if col == "waec_credits" else "unknown" if col in categorical_columns else 0.0
+    for col in CATEGORICAL_COLUMNS:
+        df[col] = df[col].astype(object)
 
-    df_input = df_input[features]
+    return df
 
-    for col in numerical_columns:
-        if col in df_input.columns:
-            df_input[col] = pd.to_numeric(df_input[col], errors="coerce").fillna(0.0)
 
-    df_input = df_input.astype({col: "float64" if col in numerical_columns else "object" for col in features})
-    math_grade = df_input.at[0, "mathematics"]
-    eng_grade = df_input.at[0, "english"]
-    if math_grade == 1 or eng_grade == 1:
-        return {
-            "predicted_career": "None, please improve your grades in Mathematics and English to get career recommendations.",
-            "confidence_percent": 0.0,
-            "top_3": []
-        }
+def predict_career(input_data: dict) -> dict:
+    """
+    Predict career path from a student profile dict.
+
+    Required keys (case-insensitive, spaces normalised to underscores):
+      gender, school_type, department
+
+    Optional keys:
+      academic_strength, best_subject_category, confidence_level,
+      career_influence, subject grades (A–F), numerical scores
+
+    Returns:
+      {
+        "predicted_career": str,
+        "confidence_percent": float,
+        "top_3": [{"career": str, "confidence_percent": float}, ...]
+      }
+    """
+    df_input = _build_input_df(input_data)
+
     pred_encoded = model.predict(df_input)[0]
     proba = model.predict_proba(df_input)[0]
 
     career = le.inverse_transform([pred_encoded])[0]
     confidence = float(np.max(proba))
-    top_three = sorted(zip(le.classes_, proba), key=lambda x: x[1], reverse=True)[:3]
+    top_three = sorted(
+        zip(le.classes_, proba), key=lambda x: x[1], reverse=True
+    )[:3]
 
     return {
         "predicted_career": str(career),
         "confidence_percent": float(round(confidence * 100, 1)),
         "top_3": [
             {
-                "career": str(career_name),
-                "confidence_percent": float(round(float(prob) * 100, 1))
+                "career": str(c),
+                "confidence_percent": float(round(float(p) * 100, 1)),
             }
-            for career_name, prob in top_three
-        ]
+            for c, p in top_three
+        ],
     }
 
-def transform_for_model(input_data: dict):
-    """Return the preprocessed DataFrame used by the model for a single input dict."""
-    df_input = pd.DataFrame([input_data])
-    df_input.columns = (
-        df_input.columns
-        .str.strip()
-        .str.lower()
-        .str.replace(' ', '_', regex=False)
-    )
 
-    categorical_columns = [
-        "gender", "school_type", "department", "academic_strength", "best_subject_category",
-        "confidence_level", "career_influence",
-        "mathematics", "english", "civic_education", "physics", "chemistry",
-        "biology", "further_mathematics", "agricultural_science", "geography", "technical_drawing",
-        "computer_studies", "yoruba", "igbo_hausa", "data_processing", "literature_in_english",
-        "history", "christian_religious_studies/islamic_studies", "french", "creative_arts", "economics",
-        "financial_accounting", "commerce", "government", "marketing"
-    ]
+def transform_for_model(input_data: dict) -> pd.DataFrame:
+    """Return the preprocessed DataFrame used by the model for debugging."""
+    return _build_input_df(input_data)
 
-    numerical_columns = [
-        "age", "waec_year", "waec_credits", "cgpa", "course_alignment",
-        "aptitude_score_10", "cognitive_score_10", "psychometric_avg_5", "sentiment_avg_5"
-    ]
 
-    features = categorical_columns + numerical_columns
-
-    defaults = {
-        "gender": None,
-        "school_type": None,
-        "department": None,
-        "academic_strength": None,
-        "best_subject_category": None,
-        "confidence_level": None,
-        "career_influence": None,
-        "mathematics": "UNKNOWN",
-        "english": "UNKNOWN",
-        "physics": "UNKNOWN",
-        "chemistry": "UNKNOWN",
-        "biology": "UNKNOWN",
-        "further_mathematics": "UNKNOWN",
-        "agricultural_science": "UNKNOWN",
-        "geography": "UNKNOWN",
-        "technical_drawing": "UNKNOWN",
-        "computer_studies": "UNKNOWN",
-        "yoruba": "UNKNOWN",
-        "igbo_hausa": "UNKNOWN",
-        "data_processing": "UNKNOWN",
-        "literature_in_english": "UNKNOWN",
-        "history": "UNKNOWN",
-        "christian_religious_studies/islamic_studies": "UNKNOWN",
-        "french": "UNKNOWN",
-        "creative_arts": "UNKNOWN",
-        "economics": "UNKNOWN",
-        "financial_accounting": "UNKNOWN",
-        "commerce": "UNKNOWN",
-        "government": "UNKNOWN",
-        "marketing": "UNKNOWN",
-        "waec_credits": 5.0,
-        "cgpa": 0.0,
-        "course_alignment": 0,
-        "aptitude_score_10": 5,
-        "cognitive_score_10": 5,
-        "psychometric_avg_5": 3.0,
-        "sentiment_avg_5": 3.0,
-    }
-
-    for col, default_value in defaults.items():
-        if col not in df_input.columns:
-            df_input[col] = default_value
-
-    grade_map = {"A": 8, "B": 6, "C": 5, "D": 3, "E": 2, "F": 1, "UNKNOWN": 5}
-    grade_cols = [
-        "mathematics", "english", "physics", "chemistry", "biology", "further_mathematics",
-        "agricultural_science", "geography", "technical_drawing", "computer_studies",
-        "yoruba", "igbo_hausa", "data_processing", "literature_in_english", "history",
-        "christian_religious_studies/islamic_studies", "french", "creative_arts",
-        "economics", "financial_accounting", "commerce", "government", "marketing", "civic_education"
-    ]
-
-    for col in grade_cols:
-        if col in df_input.columns:
-            df_input[col] = (
-                df_input[col]
-                .astype(str)
-                .str.strip()
-                .str.upper()
-                .map(grade_map)
-                .fillna(5)
-            )
-
-    for col in features:
-        if col not in df_input.columns:
-            df_input[col] = 5.0 if col == "waec_credits" else "unknown" if col in categorical_columns else 0.0
-
-    for col in numerical_columns:
-        if col in df_input.columns:
-            df_input[col] = pd.to_numeric(df_input[col], errors="coerce").fillna(0.0)
-
-    df_input = df_input[features]
-    df_input = df_input.astype({col: "float64" if col in numerical_columns else "object" for col in features})
-    return df_input
-
-# Quick test
+# ── Quick smoke test ───────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    sample = {
-        'Gender': 'Male',
-        'Age': '23',
-        'School_Type': 'Mission / Faith School',
-        'Department': 'Science',
-        'Mathematics': 'C',
-        'English': 'B',
-        'Civic Education': 'D',
-        'Physics': 'E',
-        'Chemistry': 'A',
-        'Biology': 'A',
-        'agricultural Science': 'B',
-        'geography': 'D',
-        'Academic_Strength': 'Low',
-        'Best_Subject_Category': 'Science',
-        'Confidence_Level': 'Not very confident',
-        'Career_Influence': 'Personal passion'
+    science_sample = {
+        "Gender": "Male",
+        "School_Type": "Private School",
+        "Department": "Science",
+        "Mathematics": "A",
+        "English": "A",
+        "Physics": "A",
+        "Chemistry": "A",
+        "Biology": "A",
+        "Further_Mathematics": "A",
+        "Computer_Studies": "A",
+        "Academic_Strength": "High",
+        "Best_Subject_Category": "Science",
+        "Confidence_Level": "Very confident",
+        "Career_Influence": "Personal passion",
+        "Age": 18,
+        "WAEC_Year": 2024,
+        "WAEC_Credits": 8,
+        "CGPA": 4.5,
+        "aptitude_score_10": 9,
+        "cognitive_score_10": 9,
+        "psychometric_avg_5": 4.5,
+        "sentiment_avg_5": 4.5,
+        "course_alignment": 1,
     }
 
-    result = predict_career(sample)
+    arts_sample = {
+        "Gender": "Female",
+        "School_Type": "Government School",
+        "Department": "Arts",
+        "Mathematics": "C",
+        "English": "A",
+        "Literature_In_English": "A",
+        "Government": "A",
+        "Christian_Religious_Studies/Islamic_Studies": "B",
+        "Creative_Arts": "A",
+        "Academic_Strength": "High",
+        "Best_Subject_Category": "Arts",
+        "Confidence_Level": "Very confident",
+        "Career_Influence": "Personal passion",
+        "Age": 17,
+        "WAEC_Year": 2024,
+        "WAEC_Credits": 7,
+        "CGPA": 4.0,
+        "aptitude_score_10": 7,
+        "cognitive_score_10": 8,
+        "psychometric_avg_5": 4.0,
+        "sentiment_avg_5": 4.0,
+        "course_alignment": 1,
+    }
 
-    print("\n=== SS Student Career Prediction ===")
-    print(f"**Predicted Career:** {result['predicted_career']}")
-    print(f"Confidence: {result['confidence_percent']:.1f}%\n")
-    print("Top 3:")
-    for item in result['top_3']:
-        print(f"  • {item['career']} ({item['confidence_percent']:.1f}%)")
+    commercial_sample = {
+        "Gender": "Male",
+        "School_Type": "Mission / Faith School",
+        "Department": "Commercial",
+        "Mathematics": "B",
+        "English": "A",
+        "Economics": "A",
+        "Financial_Accounting": "A",
+        "Commerce": "A",
+        "Marketing": "A",
+        "Academic_Strength": "High",
+        "Best_Subject_Category": "Commercial",
+        "Confidence_Level": "Very confident",
+        "Career_Influence": "Financial considerations",
+        "Age": 19,
+        "WAEC_Year": 2024,
+        "WAEC_Credits": 7,
+        "CGPA": 4.2,
+        "aptitude_score_10": 8,
+        "cognitive_score_10": 8,
+        "psychometric_avg_5": 4.0,
+        "sentiment_avg_5": 4.0,
+        "course_alignment": 1,
+    }
+
+    for label, sample in [
+        ("Science (All A, High CGPA)", science_sample),
+        ("Arts (Strong Literature/Govt)", arts_sample),
+        ("Commercial (Strong Business Subjects)", commercial_sample),
+    ]:
+        result = predict_career(sample)
+        print(f"\n=== {label} ===")
+        print(f"Predicted: {result['predicted_career']} ({result['confidence_percent']}%)")
+        for item in result["top_3"]:
+            print(f"  • {item['career']}: {item['confidence_percent']}%")

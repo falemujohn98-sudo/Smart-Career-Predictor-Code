@@ -153,45 +153,163 @@ def submit_assessment(data: SubmissionRequest):
         except Exception:
             pass
 
-    # Build profile for prediction
-    profile = {
-        "Gender": student_row.get("gender", "Male"),
-        "Age": 16,
-        "School_Type": student_row.get("school_type", "Government School"),
-        "Department": student_row.get("department", "Science"),
-        "Academic Strength": "Average",
-        "Best Subject Category": "Science",
-        "WAEC_Credits": 5,
-        "CGPA": 3.0,
-        "Aptitude Score 10": scores.get("aptitude_score_10", 5.0),
-        "Cognitive Score 10": scores.get("cognitive_score_10", 5.0),
-        "Psychometric Avg 5": scores.get("psychometric_avg_5", 3.0),
-        "Sentiment Avg 5": scores.get("sentiment_avg_5", 3.0),
-    }
+    department = student_row.get("department", "Science") or "Science"
 
-    # Merge subject grades (case-insensitive keys mapping)
+    # ── Grade numeric conversion ──────────────────────────────────────────────
+    GRADE_NUM = {"A": 8, "B": 6, "C": 5, "D": 3, "E": 2, "F": 1}
+
+    # Department → canonical subject groups mapping
+    DEPT_SUBJECTS = {
+        "Science": [
+            "Physics", "Chemistry", "Biology", "Further_Mathematics",
+            "Agricultural_Science", "Geography", "Technical_Drawing", "Computer_Studies",
+        ],
+        "Arts": [
+            "Literature_In_English", "Government", "History",
+            "Christian_Religious_Studies/Islamic_Studies", "Creative_Arts", "Yoruba", "Igbo_Hausa",
+        ],
+        "Commercial": [
+            "Economics", "Financial_Accounting", "Commerce", "Marketing", "Government",
+        ],
+    }
+    # Compulsory subjects present in all departments
+    COMPULSORY = ["Mathematics", "English", "Civic_Education"]
+
+    # All 22 subjects the model was trained on (MUST match exactly)
     all_subjects = [
         "Mathematics", "English", "Civic_Education", "Physics", "Chemistry",
         "Biology", "Further_Mathematics", "Agricultural_Science", "Geography",
         "Technical_Drawing", "Computer_Studies", "Yoruba", "Igbo_Hausa",
         "Data_Processing", "Literature_In_English", "Christian_Religious_Studies/Islamic_Studies",
         "Creative_Arts", "Economics", "Financial_Accounting", "Commerce",
-        "Business_Studies", "Government", "Marketing", "History", "Fine_Art"
+        "Government", "Marketing",
     ]
+
+    # ── Resolve grades from db_grades ────────────────────────────────────────
+    subject_grades = {}  # sub -> letter grade (A/B/C/D/E/F)
     for sub in all_subjects:
-        key = sub.lower().replace("/", "_")
-        # Find matching grade from db_grades (case-insensitive and slash/space replacement)
-        db_val = db_grades.get(key) or db_grades.get(sub.lower()) or db_grades.get(sub)
-        if db_val:
-            profile[sub] = db_val
+        # Try several key variants
+        key_variants = [
+            sub.lower().replace("/", "_").replace(" ", "_"),
+            sub.lower(),
+            sub,
+            sub.lower().replace("_", " "),
+        ]
+        resolved = None
+        for k in key_variants:
+            v = db_grades.get(k)
+            if v:
+                resolved = str(v).strip().upper()
+                break
+        if resolved and resolved in GRADE_NUM:
+            subject_grades[sub] = resolved
         else:
-            # Defaults
-            if sub == "Mathematics":
-                profile[sub] = "C"
-            elif sub == "English":
-                profile[sub] = "B"
+            # Sensible defaults per subject importance
+            if sub in ("Mathematics", "English"):
+                subject_grades[sub] = "B"
             else:
-                profile[sub] = "C"
+                subject_grades[sub] = "C"
+
+    # ── Derive computed features ──────────────────────────────────────────────
+    # 1. WAEC Credits: count subjects with C or above (grade ≥ 5)
+    waec_credits = sum(
+        1 for g in subject_grades.values() if GRADE_NUM.get(g, 0) >= 5
+    )
+    waec_credits = max(3, min(waec_credits, 9))  # clamp to realistic range
+
+    # 2. CGPA derived from average grade score (mapped to 0–5 scale)
+    dept_subs = DEPT_SUBJECTS.get(department, DEPT_SUBJECTS["Science"])
+    relevant_subs = COMPULSORY + dept_subs
+    grade_vals = [
+        GRADE_NUM.get(subject_grades.get(s, "C"), 5)
+        for s in relevant_subs
+        if s in subject_grades
+    ]
+    avg_grade = (sum(grade_vals) / len(grade_vals)) if grade_vals else 5.0
+    # Map 1-8 grade scale to 0-5 CGPA
+    cgpa = round(min(5.0, max(0.5, (avg_grade / 8.0) * 5.0)), 2)
+
+    # 3. Academic Strength from test performance + grade average
+    apt = scores.get("aptitude_score_10", 5.0)
+    cog = scores.get("cognitive_score_10", 5.0)
+    combined_score = (avg_grade / 8.0 * 10 + apt + cog) / 3.0  # all on 0-10
+    if combined_score >= 7.5:
+        academic_strength = "Excellent"
+    elif combined_score >= 6.0:
+        academic_strength = "Good"
+    elif combined_score >= 4.5:
+        academic_strength = "Average"
+    else:
+        academic_strength = "Below Average"
+
+    # 4. Best Subject Category: which group has highest average grade?
+    group_scores = {}
+    for dept_label, subs in DEPT_SUBJECTS.items():
+        vals = [GRADE_NUM.get(subject_grades.get(s, "C"), 5) for s in subs if s in subject_grades]
+        group_scores[dept_label] = sum(vals) / len(vals) if vals else 5.0
+    best_subject_category = max(group_scores, key=group_scores.get)
+
+    # 5. Course alignment: does department match best subject category?
+    course_alignment = 1 if best_subject_category == department else 0
+
+    # 6. Confidence level derived from test composite
+    composite_test = (apt + cog) / 2.0
+    if composite_test >= 8.0:
+        confidence_level = "Very confident"
+    elif composite_test >= 6.0:
+        confidence_level = "Quite confident"
+    elif composite_test >= 4.0:
+        confidence_level = "Somewhat confident"
+    else:
+        confidence_level = "Not very confident"
+
+    # 7. Career influence — derive from psychometric interest pattern
+    psy_val = scores.get("psychometric_avg_5", 3.0)
+    per_val = scores.get("sentiment_avg_5", 3.0)
+    if psy_val >= 4.0:
+        career_influence = "Personal passion"
+    elif per_val >= 4.0:
+        career_influence = "Family influence"
+    elif composite_test >= 7.0:
+        career_influence = "Financial considerations"
+    else:
+        career_influence = "Peer influence"
+
+    # 8. Derive realistic age from DOB (default 16)
+    student_age = 16
+    dob_str = student_row.get("dob", "")
+    if dob_str:
+        try:
+            from datetime import datetime, date
+            dob_date = datetime.strptime(str(dob_str).strip()[:10], "%Y-%m-%d").date()
+            student_age = max(13, min(25, (date.today() - dob_date).days // 365))
+        except Exception:
+            student_age = 16
+
+    # ── Build full profile for ML model ──────────────────────────────────────
+    # Keys MUST use underscores to match predict.py's _build_input_df normaliser
+    profile = {
+        "Gender": student_row.get("gender", "Male"),
+        "Age": student_age,
+        "School_Type": student_row.get("school_type", "Government School"),
+        "Department": department,
+        "Academic_Strength": academic_strength,
+        "Best_Subject_Category": best_subject_category,
+        "WAEC_Credits": waec_credits,
+        "WAEC_Year": 2024,
+        "CGPA": cgpa,
+        "Course_Alignment": course_alignment,
+        "Confidence_Level": confidence_level,
+        "Career_Influence": career_influence,
+        "aptitude_score_10": apt,
+        "cognitive_score_10": cog,
+        "psychometric_avg_5": scores.get("psychometric_avg_5", 3.0),
+        "sentiment_avg_5": scores.get("sentiment_avg_5", 3.0),
+    }
+
+    # Merge all subject grades into profile (exact 22 columns)
+    for sub in all_subjects:
+        profile[sub] = subject_grades.get(sub, "UNKNOWN")
 
     xgb_result = predict_career(profile)
     gemini_result = gemini_final_prediction(xgb_result, scores, profile)
@@ -200,9 +318,17 @@ def submit_assessment(data: SubmissionRequest):
         "student_id": data.student_id,
         "prediction": xgb_result,
         "gemini_recommendation": gemini_result,
-        "test_scores": scores
+        "test_scores": scores,
+        "profile_summary": {
+            "department": department,
+            "academic_strength": academic_strength,
+            "best_subject_category": best_subject_category,
+            "waec_credits": waec_credits,
+            "cgpa": cgpa,
+            "course_alignment": course_alignment,
+        }
     }
-    
+
     save_assessment(data.student_id, result)
     return result
 

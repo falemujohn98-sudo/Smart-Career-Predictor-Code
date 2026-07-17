@@ -136,87 +136,390 @@ LOCAL_CAREER_GUIDANCE = {
 }
 
 
+# Department → preferred career paths mapping (high-accuracy fallback)
+DEPT_CAREER_MAP = {
+    "Science": {
+        "default": "Engineering & Technology",
+        "high_bio_chem": "Medicine & Health Sciences",
+        "high_math_physics": "Computer Science & IT",
+        "high_agric": "Agriculture & Environmental Sciences",
+    },
+    "Arts": {
+        "default": "Education & Humanities",
+        "high_govt_civic": "Law & Social Sciences",
+        "high_lit_english": "Mass Communication & Media",
+        "high_creative": "Creative Arts & Design",
+    },
+    "Commercial": {
+        "default": "Business & Finance",
+        "high_marketing": "Entrepreneurship & Management",
+        "high_econ_accounts": "Business & Finance",
+    },
+}
+
+# Minimum subject scores that trigger specialist override
+GRADE_NUM = {"A": 8, "B": 6, "C": 5, "D": 3, "E": 2, "F": 1, "UNKNOWN": 5}
+
+
+def _get_subject_num(profile, sub):
+    """Return numeric grade value for a subject in the profile."""
+    grade_str = str(profile.get(sub, "C")).strip().upper()
+    return GRADE_NUM.get(grade_str, 5)
+
+
+def _override_career_by_department(profile):
+    """
+    Department + subject-grade-aware career override.
+    Returns the most appropriate career string, or None to keep the ML result.
+    """
+    dept = profile.get("Department", "Science")
+    
+    if dept == "Science":
+        bio = _get_subject_num(profile, "Biology")
+        chem = _get_subject_num(profile, "Chemistry")
+        math = _get_subject_num(profile, "Mathematics")
+        phys = _get_subject_num(profile, "Physics")
+        comp = _get_subject_num(profile, "Computer_Studies")
+        fm = _get_subject_num(profile, "Further_Mathematics")
+        agric = _get_subject_num(profile, "Agricultural_Science")
+
+        # Strong bio+chem → Medicine
+        if (bio + chem) >= 14:
+            return "Medicine & Health Sciences"
+        # Strong math+physics or CS → CS&IT
+        if (math + phys + fm + comp) >= 24 or (comp + math) >= 14:
+            return "Computer Science & IT"
+        # Strong agric → Agriculture
+        if agric >= 7:
+            return "Agriculture & Environmental Sciences"
+        return "Engineering & Technology"
+
+    elif dept == "Arts":
+        lit = _get_subject_num(profile, "Literature_In_English")
+        govt = _get_subject_num(profile, "Government")
+        hist = _get_subject_num(profile, "History")
+        crs = _get_subject_num(profile, "Christian_Religious_Studies/Islamic_Studies")
+        creative = _get_subject_num(profile, "Creative_Arts")
+
+        # Strong governance/history → Law & Social Sciences
+        if (govt + hist) >= 12:
+            return "Law & Social Sciences"
+        # Strong literature → Mass Communication
+        if lit >= 7:
+            return "Mass Communication & Media"
+        # Strong creative arts
+        if creative >= 7:
+            return "Creative Arts & Design"
+        return "Education & Humanities"
+
+    elif dept == "Commercial":
+        econ = _get_subject_num(profile, "Economics")
+        acc = _get_subject_num(profile, "Financial_Accounting")
+        mkt = _get_subject_num(profile, "Marketing")
+        comm = _get_subject_num(profile, "Commerce")
+
+        # Strong marketing → Entrepreneurship
+        if mkt >= 7:
+            return "Entrepreneurship & Management"
+        # Strong econ + accounting → Finance
+        if (econ + acc) >= 13:
+            return "Business & Finance"
+        return "Business & Finance"
+
+    return None
+
+
 def generate_local_fallback(xgb_result, test_scores, profile):
     predicted_career = xgb_result.get("predicted_career", "Computer Science & IT")
-    
+    confidence = xgb_result.get("confidence_percent", 0.0)
+
+    # When ML confidence is below 50%, use our deterministic department + subject override
+    if confidence < 50.0 or predicted_career.startswith("None"):
+        override = _override_career_by_department(profile)
+        if override:
+            predicted_career = override
+
     # Fallback to default if predicted_career is not in the guidance dict
     guidance = LOCAL_CAREER_GUIDANCE.get(predicted_career, LOCAL_CAREER_GUIDANCE["Computer Science & IT"])
-    
+
     department = profile.get("Department", "Science")
     gender = profile.get("Gender", "Student")
     school_type = profile.get("School_Type", "Government School")
-    
+    academic_strength = profile.get("Academic_Strength", "Average")
+    best_cat = profile.get("Best_Subject_Category", department)
+    cgpa = profile.get("CGPA", 3.0)
+    waec_credits = profile.get("WAEC_Credits", 5)
+
     apt = test_scores.get("aptitude_score_10", 5.0)
     cog = test_scores.get("cognitive_score_10", 5.0)
     psy = test_scores.get("psychometric_avg_5", 3.0)
     per = test_scores.get("sentiment_avg_5", 3.0)
-    
-    # Analyze strengths based on scores
+
+    # ── Identify student's top 3 strongest subjects ──────────────────────────
+    subject_list = [
+        "Mathematics", "English", "Physics", "Chemistry", "Biology",
+        "Further_Mathematics", "Agricultural_Science", "Geography",
+        "Computer_Studies", "Literature_In_English", "Government",
+        "Economics", "Financial_Accounting", "Commerce", "Marketing",
+        "Creative_Arts", "Civic_Education",
+    ]
+    sub_scores = [(s, GRADE_NUM.get(str(profile.get(s, "C")).upper(), 5)) for s in subject_list]
+    sub_scores.sort(key=lambda x: x[1], reverse=True)
+    top_subs = sub_scores[:3]
+    best_sub = top_subs[0][0]
+
+    # ── Career-specific JAMB combinations & Nigerian universities ────────────
+    CAREER_JAMB = {
+        "Agriculture & Environmental Sciences": {
+            "jamb": "English, Biology, Chemistry, and Agricultural Science (or Physics)",
+            "universities": "University of Agriculture Abeokuta (FUNAAB), Ahmadu Bello University Zaria, University of Ibadan",
+            "scholarships": "NNPC/NAOC/OANDO JV Scholarship, Federal Government STEM Scholarship, AGRA Scholarship for Agricultural Sciences",
+        },
+        "Business & Finance": {
+            "jamb": "English, Mathematics, Economics, and Accounting (or Commerce)",
+            "universities": "University of Lagos (UNILAG), Covenant University, Obafemi Awolowo University (OAU)",
+            "scholarships": "GTBank Scholarship, NNPC/Shell Scholarship, First Bank Endowment Fund",
+        },
+        "Computer Science & IT": {
+            "jamb": "English, Mathematics, Physics, and Chemistry (or Biology)",
+            "universities": "University of Lagos (UNILAG), Federal University of Technology Akure (FUTA), Covenant University, Obafemi Awolowo University",
+            "scholarships": "Google Africa Developer Scholarship, MTN Foundation Scholarship, PTDF Overseas Scholarship, Andela Learning Community",
+        },
+        "Creative Arts & Design": {
+            "jamb": "English, Literature in English, and two of Fine Arts/Government/CRS/Economics",
+            "universities": "Yaba College of Technology, University of Lagos, Obafemi Awolowo University, Ahmadu Bello University",
+            "scholarships": "TETFund Scholarship, British Council GREAT Scholarship, Creative Industry Initiative",
+        },
+        "Education & Humanities": {
+            "jamb": "English, Literature in English, and two of Government/History/CRS/Economics",
+            "universities": "University of Ibadan, University of Nigeria Nsukka (UNN), Lagos State University (LASU), Obafemi Awolowo University",
+            "scholarships": "TETFund Scholarship, Agbami Scholarship, Federal Government Teacher Training Bursary",
+        },
+        "Engineering & Technology": {
+            "jamb": "English, Mathematics, Physics, and Chemistry",
+            "universities": "University of Lagos, Federal University of Technology Akure (FUTA), Ahmadu Bello University, University of Benin",
+            "scholarships": "PTDF Scholarship, Shell/NNPC Scholarship, NNPC/Chevron JV Scholarship, Total E&P Scholarship",
+        },
+        "Entrepreneurship & Management": {
+            "jamb": "English, Mathematics, Economics, and Commerce (or Accounting)",
+            "universities": "Lagos Business School (LBS), University of Lagos, Covenant University, Babcock University",
+            "scholarships": "Tony Elumelu Foundation Entrepreneurship Programme, Bank of Industry Youth Entrepreneurship Support, MTN Y'ello Foundation",
+        },
+        "Law & Social Sciences": {
+            "jamb": "English, Literature in English, Government, and Economics (or CRS/History)",
+            "universities": "University of Lagos, University of Ibadan, Obafemi Awolowo University, Nigerian Law School (post-LLB)",
+            "scholarships": "Agbami Scholarship, NNPC/Total Scholarship, Federal Government Scholarship for Law",
+        },
+        "Mass Communication & Media": {
+            "jamb": "English, Literature in English, Government, and Economics (or CRS)",
+            "universities": "University of Lagos, University of Nigeria Nsukka, Lagos State University, Covenant University",
+            "scholarships": "NLNG Scholarship, Media Trust Foundation, Nigerian Press Council Fellowship",
+        },
+        "Medicine & Health Sciences": {
+            "jamb": "English, Biology, Chemistry, and Physics (or Mathematics)",
+            "universities": "University of Ibadan (UI), University of Lagos (UNILAG), Obafemi Awolowo University (OAU), Ahmadu Bello University (ABU)",
+            "scholarships": "NNPC/Total Scholarship, Agbami Medical Scholarship, BEA Scholarship, Federal Government Health Scholarship",
+        },
+    }
+
+    career_info = CAREER_JAMB.get(predicted_career, CAREER_JAMB.get("Computer Science & IT"))
+
+    # ── Build strengths analysis ─────────────────────────────────────────────
     strengths = []
+    growth_areas = []
+
+    # Aptitude analysis
     if apt >= 7.5:
-        strengths.append("High Aptitude Score: Demonstrates excellent logical and mathematical reasoning ability.")
+        strengths.append(f"**Outstanding Logical Reasoning ({apt:.1f}/10)** — Your aptitude score places you in the top tier. You demonstrate exceptional ability in numerical reasoning, pattern recognition, and analytical problem-solving. This is a critical advantage for {predicted_career}.")
+    elif apt >= 5.0:
+        strengths.append(f"**Solid Analytical Thinking ({apt:.1f}/10)** — Your aptitude score shows capable logical reasoning skills. With targeted practice in mathematical problem-solving and abstract thinking, you can sharpen this further.")
     else:
-        strengths.append("Capable Problem Solving: Possesses steady analytical skills suited for structured problem solving.")
-        
+        growth_areas.append(f"**Aptitude Development ({apt:.1f}/10)** — Focus on daily practice with logical reasoning puzzles, WAEC past questions (especially Mathematics), and apps like Brilliant.org to strengthen your analytical foundation.")
+
+    # Cognitive analysis
     if cog >= 7.5:
-        strengths.append("Excellent Cognitive Processing: Quick learning speed, strong memory, and spatial/pattern recognition.")
+        strengths.append(f"**Excellent Cognitive Processing ({cog:.1f}/10)** — You demonstrate rapid comprehension, strong working memory, and effective information processing. You'll excel at absorbing complex material in university-level {predicted_career} courses.")
+    elif cog >= 5.0:
+        strengths.append(f"**Good Cognitive Ability ({cog:.1f}/10)** — Your cognitive skills show steady information processing and learning capacity. Regular reading, memory exercises, and engaging with challenging material will help you improve.")
     else:
-        strengths.append("Solid Processing Skills: Steady attention to detail and good comprehension of new concepts.")
-        
+        growth_areas.append(f"**Cognitive Skill Building ({cog:.1f}/10)** — Strengthen your cognitive processing through active reading (newspapers, textbooks), crossword puzzles, and learning new skills like coding basics or a musical instrument.")
+
+    # Psychometric analysis
     if psy >= 4.0:
-        strengths.append("High Professional Drive: Demonstrates strong initiative, independent learning interest, and career motivation.")
+        strengths.append(f"**Strong Career Motivation ({psy:.1f}/5)** — Your psychometric profile reveals deep intrinsic motivation, self-directed learning habits, and genuine passion. Students with this level of drive consistently outperform their peers in {predicted_career}.")
+    elif psy >= 2.5:
+        strengths.append(f"**Developing Professional Interest ({psy:.1f}/5)** — You show genuine curiosity about this career path. Engaging with professionals in {predicted_career} through mentorship or job shadowing will deepen your commitment.")
+    else:
+        growth_areas.append(f"**Career Exploration Needed ({psy:.1f}/5)** — Take time to explore different aspects of {predicted_career} through YouTube channels, career talks, and informational interviews with professionals in the field.")
+
+    # Personality analysis
     if per >= 4.0:
-        strengths.append("Excellent Team Alignment: Strong organizational and interpersonal habits suited for team collaboration and leadership.")
-    elif per <= 2.5:
-        strengths.append("Independent Work Style: Prefers autonomous focus and working quietly on tasks without team distractions.")
-        
-    strengths.append(f"Academic Department Alignment: Your department selection ({department}) aligns directly with this recommendation path.")
-    
-    strengths_html = "\n".join([f"- {s}" for s in strengths])
-    steps_html = "\n".join([f"{i+1}. {step}" for i, step in enumerate(guidance["actionable_steps"])])
-    
-    summary = f"""### Career Pathway: {predicted_career}
+        strengths.append(f"**Excellent Interpersonal & Organisational Skills ({per:.1f}/5)** — You work well with others, manage your time effectively, and show strong emotional intelligence. Collaborative and leadership roles in {predicted_career} are a natural fit for you.")
+    elif per >= 2.5:
+        strengths.append(f"**Balanced Work Style ({per:.1f}/5)** — You can adapt between independent work and team collaboration. Joining student organisations or group projects will help you build even stronger teamwork skills.")
+    else:
+        strengths.append(f"**Independent & Focused ({per:.1f}/5)** — You prefer deep, focused work and self-directed learning. Many specialist and research roles in {predicted_career} highly value this quality.")
 
-    {guidance['description']}
+    # Academic strengths
+    top_sub_names = [s.replace('_', ' ') for s, _ in top_subs if _ >= 6]
+    if top_sub_names:
+        strengths.append(f"**Subject Strengths** — Your strongest subjects are **{', '.join(top_sub_names)}**, which directly support a career in {predicted_career}.")
 
-    ### Key Strengths Detected:
-    {strengths_html}
+    if best_cat == department:
+        strengths.append(f"**Perfect Department Alignment** — Your highest-performing subject group ({best_cat}) aligns perfectly with your {department} department, maximising your readiness for {predicted_career}.")
 
-    ### Actionable Next Steps:
-    {steps_html}
+    # CGPA commentary
+    if cgpa >= 4.0:
+        strengths.append(f"**Strong Academic Record (CGPA: {cgpa:.2f}/5.0)** — Your grades position you competitively for direct entry into top Nigerian universities for {predicted_career}.")
+    elif cgpa >= 3.0:
+        strengths.append(f"**Solid Academic Foundation (CGPA: {cgpa:.2f}/5.0)** — Your grades meet the requirements for most {predicted_career} programmes. Focus on excelling in your core subjects to strengthen your JAMB and Post-UTME performance.")
+    else:
+        growth_areas.append(f"**Academic Improvement Needed (CGPA: {cgpa:.2f}/5.0)** — Prioritise improving your grades in core subjects. Consider enrolling in after-school tutorials, joining study groups, and practising with WAEC and JAMB past questions daily.")
 
-    *(Note: These career recommendations are locally generated by our rule-based expert engine based on your academic profile and test performance.)*"""
-    
+    strengths_md = "\n".join([f"- {s}" for s in strengths])
+    growth_md = "\n".join([f"- {g}" for g in growth_areas]) if growth_areas else ""
+    steps_md = "\n".join([f"{i+1}. {step}" for i, step in enumerate(guidance["actionable_steps"])])
+
+    # ── Compose the full report ──────────────────────────────────────────────
+    summary = f"""### 🎯 Career Pathway: {predicted_career}
+
+{guidance['description']}
+
+---
+
+### 📊 Your Profile at a Glance
+| Metric | Value |
+|---|---|
+| **Department** | {department} |
+| **Academic Strength** | {academic_strength} |
+| **Estimated CGPA** | {cgpa:.2f} / 5.0 |
+| **WAEC Credits (C and above)** | {waec_credits} subjects |
+| **Best Subject Group** | {best_cat} |
+| **School Type** | {school_type} |
+
+---
+
+### 💪 Your Key Strengths
+{strengths_md}
+"""
+
+    if growth_md:
+        summary += f"""
+### 📈 Areas for Growth
+{growth_md}
+"""
+
+    summary += f"""
+---
+
+### 🚀 Your Personalised Action Plan
+{steps_md}
+
+---
+
+### 🎓 Recommended JAMB Subject Combination
+**{career_info['jamb']}**
+
+Choose this combination when registering for JAMB to qualify for {predicted_career} programmes at top universities.
+
+### 🏫 Top Nigerian Universities for {predicted_career}
+{career_info['universities']}
+
+### 💰 Scholarships to Explore
+{career_info['scholarships']}
+
+---
+
+> **💡 Remember:** Your career journey is unique to you. These recommendations are based on your academic profile, test performance, and personality traits. Stay consistent with your studies, seek mentorship from professionals in your chosen field, and never stop learning.
+
+*— Smart Career Predictor, powered by AI and academic data analysis*"""
+
     return summary
 
 
+
+
 def gemini_final_prediction(xgb_result, test_scores, profile):
+    # Resolve the best career — apply department override if ML confidence is low
+    predicted_career = xgb_result.get("predicted_career", "Computer Science & IT")
+    confidence = xgb_result.get("confidence_percent", 0.0)
+    effective_career = predicted_career
+
+    if confidence < 50.0 or predicted_career.startswith("None"):
+        override = _override_career_by_department(profile)
+        if override:
+            effective_career = override
+            xgb_result = dict(xgb_result)
+            xgb_result["predicted_career"] = effective_career
+            xgb_result["override_applied"] = True
+
     # Try calling Google Generative AI first
     if GEMINI_API_KEY and genai is not None:
-        prompt = f"""
-You are a career guidance mentor for Nigerian secondary school students (JSS–SSS level).
+        dept = profile.get("Department", "Science")
+        DEPT_RELEVANT = {
+            "Science": ["Mathematics", "English", "Physics", "Chemistry", "Biology",
+                        "Further_Mathematics", "Agricultural_Science", "Computer_Studies"],
+            "Arts": ["Mathematics", "English", "Literature_In_English", "Government",
+                     "History", "Creative_Arts"],
+            "Commercial": ["Mathematics", "English", "Economics", "Financial_Accounting",
+                           "Commerce", "Marketing", "Government"],
+        }
+        relevant_keys = DEPT_RELEVANT.get(dept, list(DEPT_RELEVANT["Science"]))
+        grades_str = "\n".join([
+            f"  - {k.replace('_', ' ')}: {profile.get(k, 'C')}"
+            for k in relevant_keys
+        ])
 
-Student profile:
-- School Type: {profile.get('School_Type')}
-- Academic Department: {profile.get('Department')}
-- Mathematics grade: {profile.get('Mathematics')}
-- English grade: {profile.get('English')}
-- XGBoost Model Prediction: {xgb_result}
-- Graded Test Scores:
-  - Aptitude Score: {test_scores.get('aptitude_score_10')}/10
-  - Cognitive Score: {test_scores.get('cognitive_score_10')}/10
-  - Psychometric Average: {test_scores.get('psychometric_avg_5')}/5 (RIASEC Interest scale)
-  - Personality Average: {test_scores.get('sentiment_avg_5')}/5 (Big Five Behavioral scale)
+        top3_str = "\n".join([
+            f"  {i+1}. {item['career']} ({item['confidence_percent']}%)"
+            for i, item in enumerate(xgb_result.get("top_3", []))
+        ]) or f"  1. {effective_career} (primary)"
 
-Write a highly encouraging, structured career recommendation. Structure it as follows:
-1. "### Career Pathway: [Career Category]"
-   A short explanation of the predicted career path in a Nigerian context (e.g. opportunities in fintech, agribusiness, health-tech, Nollywood, etc.).
-2. "### Key Strengths Detected"
-   A list of strengths shown by the student based on their academic and test results.
-3. "### Actionable Next Steps"
-   3 specific next steps for a student in Nigeria (e.g., target WAEC requirements, online study resources, typical JAMB subject combinations).
+        prompt = f"""You are an expert career guidance counsellor for Nigerian secondary school students at SSS level.
 
-Be extremely encouraging. Speak directly to the student.
+=== STUDENT ACADEMIC PROFILE ===
+- School Type: {profile.get('School_Type', 'Government School')}
+- Department: {dept}
+- Academic Strength: {profile.get('Academic_Strength', 'Average')}
+- Best Subject Category: {profile.get('Best_Subject_Category', dept)}
+- Estimated CGPA: {profile.get('CGPA', 3.0):.2f} / 5.0
+- WAEC Credits (C & above): {profile.get('WAEC_Credits', 5)} subjects
+- Course Alignment: {'Excellent (Department matches strongest subject group)' if profile.get('Course_Alignment', 0) == 1 else 'Some mismatch (consider reviewing elective choices)'}
+
+=== SUBJECT GRADES ===
+{grades_str}
+
+=== ASSESSMENT TEST SCORES ===
+- Aptitude Test: {test_scores.get('aptitude_score_10', 5.0):.1f} / 10 (Logical & Numerical Reasoning)
+- Cognitive Test: {test_scores.get('cognitive_score_10', 5.0):.1f} / 10 (Memory & Pattern Recognition)
+- Psychometric Interest Score: {test_scores.get('psychometric_avg_5', 3.0):.2f} / 5 (RIASEC Career Interest Scale)
+- Personality Score: {test_scores.get('sentiment_avg_5', 3.0):.2f} / 5 (Big Five Behavioural Traits)
+
+=== AI MODEL RECOMMENDATION ===
+- Primary Career Path: {effective_career}
+- Model Confidence: {confidence:.1f}%
+- Top 3 Predicted Paths:
+{top3_str}
+
+=== YOUR TASK ===
+Write a detailed, personalised career recommendation report using exactly this structure:
+
+### Career Pathway: {effective_career}
+[2-3 sentences: Describe this career path in a Nigerian context. Mention specific industries or sectors.]
+
+### \U0001f4ca Your Profile at a Glance
+[Summarise the student's department, academic strength, CGPA, and top grades in bullet points.]
+
+### \U0001f4aa Key Strengths Detected
+[4-6 bullet points referencing SPECIFIC grades and test scores.]
+
+### \U0001f680 Actionable Next Steps
+[Exactly 3 numbered steps. Include: (1) WAEC subject focus, (2) a Nigerian university or online resource, (3) a practical activity.]
+
+### \U0001f393 JAMB Subject Combination
+[List the recommended JAMB subjects for {effective_career} in Nigeria.]
+
+IMPORTANT: Be warm, encouraging, and specific. Address the student as "you". Reference their actual grades and scores.
 """
         for model_name in ["gemini-2.0-flash", "gemini-1.5-flash"]:
             try:

@@ -258,7 +258,7 @@ select.inp option{background:var(--sf2);}
   <!-- ═══════════════ LOGIN ═══════════════ -->
   <div class="page" id="login" data-name="Login">
     <div style="padding:54px 22px 22px;background:linear-gradient(180deg,var(--bg2),var(--bg));">
-      <div class="row" style="margin-bottom:22px;"><div class="back" onclick="G('splash')">←</div></div>
+      <div class="row" style="margin-bottom:22px;"><div class="back" onclick="navBack()">←</div></div>
       <div style="width:50px;height:50px;background:rgba(79,70,229,.12);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;border:1px solid rgba(79,70,229,.2);">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
       </div>
@@ -284,7 +284,7 @@ select.inp option{background:var(--sf2);}
   <div class="page" id="signup" data-name="Sign Up">
     <div style="padding:54px 22px 18px;background:linear-gradient(180deg,var(--bg2),var(--bg));">
       <div class="row" style="margin-bottom:18px;">
-        <div class="back" onclick="G('onboard')">←</div>
+        <div class="back" onclick="navBack()">←</div>
         <div style="flex:1;"></div>
         <div class="stepdots"><div class="sdot active"></div><div class="sdot"></div><div class="sdot"></div></div>
       </div>
@@ -318,7 +318,7 @@ select.inp option{background:var(--sf2);}
   <div class="page" id="profile-basic" data-name="Profile: School Info">
     <div style="padding:54px 22px 16px;">
       <div class="row" style="margin-bottom:16px;">
-        <div class="back" onclick="G('signup')">←</div>
+        <div class="back" onclick="navBack()">←</div>
         <div style="flex:1;padding-left:10px;"><div style="font-size:11px;color:var(--tx3);">Step 2 of 3</div><div style="font-size:15px;font-weight:600;">School Profile</div></div>
         <div class="stepdots"><div class="sdot done"></div><div class="sdot active"></div><div class="sdot"></div></div>
       </div>
@@ -376,7 +376,7 @@ select.inp option{background:var(--sf2);}
         <label class="lbl">Preferred Language</label>
         <select class="inp"><option>English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select>
       </div>
-      <button class="btn btn-p" onclick="G('profile-upload')">Continue →</button>
+      <button class="btn btn-p" onclick="G('profile-interests')">Continue →</button>
       <div style="height:20px;"></div>
     </div>
   </div>
@@ -385,40 +385,39 @@ select.inp option{background:var(--sf2);}
   <div class="page" id="profile-upload" data-name="Profile: Upload Results">
     <div style="padding:54px 22px 16px;">
       <div class="row" style="margin-bottom:16px;">
-        <div class="back" onclick="G('profile-basic')">←</div>
+        <div class="back" onclick="navBack()">←</div>
         <div style="flex:1;padding-left:10px;"><div style="font-size:11px;color:var(--tx3);">Step 3 of 3</div><div style="font-size:15px;font-weight:600;">Upload Results</div></div>
         <div class="stepdots"><div class="sdot done"></div><div class="sdot done"></div><div class="sdot active"></div></div>
       </div>
     </div>
     <div class="sc px">
       <div style="margin-bottom:18px;">
-        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:5px;">Your Academic Results</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.6;">Upload your total end-of-year results. Required uploads are based on your current class level. Our AI uses these to build your academic profile.</div>
+        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;margin-bottom:5px;">Enter Your Results Manually</div>
+        <div style="font-size:13px;color:var(--tx2);line-height:1.6;">Add your grades for the required subjects by hand. This helps us build your academic profile quickly without file uploads.</div>
       </div>
-      <!-- Dynamic upload slots rendered by JS -->
+      <!-- Dynamic manual grade entry rendered by JS -->
       <div id="uploadSlots"></div>
       <div class="card-g card" style="margin-bottom:18px;">
         <div style="font-size:12px;font-weight:600;color:var(--pl);margin-bottom:5px;">🔒 Your data is secure</div>
         <div style="font-size:12px;color:var(--tx2);line-height:1.6;">Results are encrypted and used only for career analysis. We never share them with third parties.</div>
       </div>
-      <button class="btn btn-p" style="margin-bottom:10px;" onclick="G('profile-interests')">Continue →</button>
-      <button class="btn-ghost" style="width:100%;text-align:center;display:block;" onclick="G('profile-interests')">Skip for now</button>
+      <div style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:16px;">Use the Save Manual Results button above to save your grades. After saving, continue to the assessment hub from the upload section.</div>
       <div style="height:20px;"></div>
     </div>
   </div>
 
   <!-- ═══════════════ VIEW UPLOADED RESULTS (NEW) ═══════════════ -->
-  <div class="page" id="view-results" data-name="View: Uploaded Results">
+  <div class="page" id="view-results" data-name="View: Manual Grades">
     <div style="padding:54px 22px 16px;">
       <div class="row" style="margin-bottom:16px;">
-        <div class="back" onclick="G('profile-upload')">←</div>
-        <div style="flex:1;padding-left:10px;"><div style="font-size:11px;color:var(--tx3);">Results</div><div style="font-size:15px;font-weight:600;">Uploaded & Manual Grades</div></div>
+        <div class="back" onclick="navBack()">←</div>
+        <div style="flex:1;padding-left:10px;"><div style="font-size:11px;color:var(--tx3);">Results</div><div style="font-size:15px;font-weight:600;">Manual Grade Overview</div></div>
       </div>
     </div>
     <div class="sc px">
       <div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;justify-content:space-between;">
         <div style="flex:1;">
-          <div style="font-size:13px;color:var(--tx2);">Review grades you uploaded from Excel and grades entered manually. Use this page to confirm or edit before running assessments.</div>
+          <div style="font-size:13px;color:var(--tx2);">Review the grades you entered manually. Use this page to confirm or edit before continuing to assessments.</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <button class="btn btn-sm" onclick="G('profile-upload')">Upload / Edit Grades</button>
@@ -435,7 +434,7 @@ select.inp option{background:var(--sf2);}
   <div class="page" id="profile-interests" data-name="Profile: Interests">
     <div style="padding:54px 22px 16px;">
       <div class="row" style="margin-bottom:16px;">
-        <div class="back" onclick="G('profile-upload')">←</div>
+        <div class="back" onclick="navBack()">←</div>
         <div style="flex:1;padding-left:10px;"><div style="font-size:11px;color:var(--tx3);">Optional</div><div style="font-size:15px;font-weight:600;">Your Interests</div></div>
       </div>
     </div>
@@ -472,7 +471,7 @@ select.inp option{background:var(--sf2);}
         <div class="chip" onclick="tChip(this)">Architecture</div>
       </div>
       <div class="ig"><label class="lbl">Preferred Career Fields (Optional)</label><input type="text" class="inp" placeholder="e.g. Software Development, Medicine…"></div>
-      <button class="btn btn-p" onclick="G('assessment-hub')">Finish Setup →</button>
+      <button class="btn btn-p" onclick="G('profile-upload')">Finish Setup →</button>
       <div style="height:20px;"></div>
     </div>
   </div>
@@ -483,10 +482,10 @@ select.inp option{background:var(--sf2);}
       <div style="padding:52px 22px 20px;background:linear-gradient(180deg,var(--bg2),var(--bg) 60%);">
         <div class="row" style="margin-bottom:18px;">
           <div>
-            <div style="font-size:12px;color:var(--tx3);">Hello, Adaeze 👋</div>
+            <div style="font-size:12px;color:var(--tx3);">Hello, <span id="assessHubUserName">Adaeze</span> 👋</div>
             <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;">Your Assessments</div>
           </div>
-          <div style="margin-left:auto;width:40px;height:40px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;">A</div>
+          <div id="assessHubAvatar" style="margin-left:auto;width:40px;height:40px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;">A</div>
         </div>
         <div class="card card-g" style="padding:14px 16px;">
           <div class="row" style="margin-bottom:8px;">
@@ -501,6 +500,7 @@ select.inp option{background:var(--sf2);}
       </div>
       <div class="sc px" style="padding-top:14px;">
         <div id="assessCards"></div>
+        <div id="assessmentAction"></div>
         <div style="padding:10px 0;border-top:1px solid var(--br);">
           <div style="font-size:12px;color:var(--tx3);text-align:center;">All 4 tests must be completed for AI analysis</div>
         </div>
@@ -518,7 +518,7 @@ select.inp option{background:var(--sf2);}
   <!-- ═══════════════ APTITUDE TEST ═══════════════ -->
   <div class="page" id="aptitude-test" data-name="Aptitude Test">
     <div style="padding:52px 22px 18px;">
-      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="G('assessment-hub')">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Aptitude Test</div><div style="font-size:12px;color:var(--a2);font-weight:600;">⏱ 22:14</div></div>
+      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="navBack()">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Aptitude Test</div></div>
       <div><div class="row" style="margin-bottom:5px;"><span style="font-size:11px;color:var(--tx3);">Question 3 of 20</span><span style="margin-left:auto;font-size:11px;color:var(--tx3);">15%</span></div><div class="ptrack"><div class="pfill" style="width:15%"></div></div></div>
     </div>
     <div class="sc px">
@@ -528,8 +528,8 @@ select.inp option{background:var(--sf2);}
       <div class="aopt" onclick="selOpt(this)"><div class="oltr">C</div>5 hours 30 minutes</div>
       <div class="aopt" onclick="selOpt(this)"><div class="oltr">D</div>6 hours</div>
       <div style="margin-top:22px;display:flex;gap:10px;">
-        <button class="btn btn-o btn-sm">← Previous</button>
-        <button class="btn btn-p btn-sm" style="flex:1;" onclick="G('cognitive-test')">Next →</button>
+        <button class="btn btn-o btn-sm" onclick="prevQuestion()">← Previous</button>
+        <button class="btn btn-p btn-sm" style="flex:1;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>
   </div>
@@ -537,7 +537,7 @@ select.inp option{background:var(--sf2);}
   <!-- ═══════════════ COGNITIVE TEST ═══════════════ -->
   <div class="page" id="cognitive-test" data-name="Cognitive Test">
     <div style="padding:52px 22px 18px;">
-      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="G('assessment-hub')">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Cognitive Test</div><div style="font-size:12px;color:var(--a2);font-weight:600;">⏱ 18:40</div></div>
+      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="navBack()">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Cognitive Test</div></div>
       <div><div class="row" style="margin-bottom:5px;"><span style="font-size:11px;color:var(--tx3);">Question 5 of 15</span><span style="margin-left:auto;font-size:11px;color:var(--tx3);">33%</span></div><div class="ptrack"><div class="pfill" style="width:33%"></div></div></div>
     </div>
     <div class="sc px">
@@ -551,8 +551,8 @@ select.inp option{background:var(--sf2);}
         <div style="font-size:12px;color:var(--tx2);">Look at the relationship between each consecutive number.</div>
       </div>
       <div style="margin-top:20px;display:flex;gap:10px;">
-        <button class="btn btn-o btn-sm">← Previous</button>
-        <button class="btn btn-p btn-sm" style="flex:1;" onclick="G('personality-test')">Next →</button>
+        <button class="btn btn-o btn-sm" onclick="prevQuestion()">← Previous</button>
+        <button class="btn btn-p btn-sm" style="flex:1;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>
   </div>
@@ -560,7 +560,7 @@ select.inp option{background:var(--sf2);}
   <!-- ═══════════════ PERSONALITY TEST ═══════════════ -->
   <div class="page" id="personality-test" data-name="Personality Test">
     <div style="padding:52px 22px 18px;">
-      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="G('assessment-hub')">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Personality Test</div></div>
+      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="navBack()">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Personality Test</div></div>
       <div><div class="row" style="margin-bottom:5px;"><span style="font-size:11px;color:var(--tx3);">Question 8 of 30</span><span style="margin-left:auto;font-size:11px;color:var(--tx3);">27%</span></div><div class="ptrack"><div class="pfill" style="width:27%"></div></div></div>
     </div>
     <div class="sc px">
@@ -572,16 +572,16 @@ select.inp option{background:var(--sf2);}
         <div class="aopt" style="flex-direction:column;text-align:center;padding:18px 10px;" onclick="selCard(this)"><div style="font-size:22px;margin-bottom:7px;">📊</div><div style="font-size:12px;">Analyse data and check quality</div></div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn btn-o btn-sm">← Previous</button>
-        <button class="btn btn-p btn-sm" style="flex:1;" onclick="G('interest-test')">Next →</button>
+        <button class="btn btn-o btn-sm" onclick="prevQuestion()">← Previous</button>
+        <button class="btn btn-p btn-sm" style="flex:1;" onclick="nextQuestion()">Next →</button>
       </div>
     </div>
   </div>
 
   <!-- ═══════════════ INTEREST TEST ═══════════════ -->
-  <div class="page" id="interest-test" data-name="Interest Inventory">
+  <div class="page" id="interest-test" data-name="Interest Test">
     <div style="padding:52px 22px 18px;">
-      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="G('assessment-hub')">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Interest Inventory</div></div>
+      <div class="row" style="margin-bottom:18px;"><div class="back" onclick="navBack()">←</div><div style="flex:1;padding-left:10px;font-size:14px;font-weight:600;">Interest Test</div></div>
       <div><div class="row" style="margin-bottom:5px;"><span style="font-size:11px;color:var(--tx3);">Question 12 of 25</span><span style="margin-left:auto;font-size:11px;color:var(--tx3);">48%</span></div><div class="ptrack"><div class="pfill" style="width:48%"></div></div></div>
     </div>
     <div class="sc px">
@@ -599,8 +599,8 @@ select.inp option{background:var(--sf2);}
         <div style="font-size:12px;color:var(--tx2);line-height:2;">• Working with data and analytics<br>• Designing user interfaces<br>• Teaching or mentoring others<br>• Creative writing or storytelling</div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn btn-o btn-sm">← Previous</button>
-        <button class="btn btn-p btn-sm" style="flex:1;" onclick="G('processing')">Submit All →</button>
+        <button class="btn btn-o btn-sm" onclick="prevQuestion()">← Previous</button>
+        <button class="btn btn-p btn-sm" style="flex:1;" onclick="nextQuestion()">Submit All →</button>
       </div>
     </div>
   </div>
@@ -634,7 +634,7 @@ select.inp option{background:var(--sf2);}
     <div style="flex:1;display:flex;flex-direction:column;">
       <div style="padding:52px 22px 20px;background:linear-gradient(180deg,var(--bg2),var(--bg));">
         <div class="row" style="margin-bottom:18px;">
-          <div class="back" onclick="G('assessment-hub')">←</div>
+          <div class="back" onclick="navBack()">←</div>
           <div style="flex:1;padding-left:10px;"><div style="font-family:'Sora',sans-serif;font-size:19px;font-weight:700;">Your Results</div><div style="font-size:12px;color:var(--tx2);">Based on your full assessment</div></div>
           <button onclick="saveAllRecommendations()" style="background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.2);border-radius:var(--rx);padding:7px 13px;font-size:12px;font-weight:600;color:var(--pl);cursor:pointer;">Save All</button>
         </div>
@@ -691,7 +691,7 @@ select.inp option{background:var(--sf2);}
     <div style="flex:1;display:flex;flex-direction:column;">
       <div style="padding:52px 22px 18px;background:linear-gradient(180deg,var(--bg2),var(--bg));">
         <div class="row" style="margin-bottom:16px;">
-          <div class="back" onclick="G('career-results')">←</div>
+          <div class="back" onclick="navBack()">←</div>
           <div style="flex:1;"></div>
           <button id="detailSaveBtn" onclick="toggleSaveCareer(currentCareerName)" style="background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.2);border-radius:var(--rx);padding:7px 13px;font-size:12px;font-weight:600;color:var(--pl);cursor:pointer;">🔖 Save</button>
         </div>
@@ -784,7 +784,7 @@ select.inp option{background:var(--sf2);}
   <div class="page" id="history" data-name="Assessment History">
     <div style="flex:1;display:flex;flex-direction:column;">
       <div style="padding:52px 22px 16px;display:flex;align-items:center;gap:10px;">
-        <div class="back" onclick="G('my-profile')">&#8592;</div>
+        <div class="back" onclick="navBack()">&#8592;</div>
         <div style="flex:1;"><div style="font-family:'Sora',sans-serif;font-size:19px;font-weight:700;">Assessment History</div><div style="font-size:12px;color:var(--tx2);">Your career journey over time</div></div>
       </div>
       <div class="sc px" id="historyList" style="padding-top:4px;">
@@ -839,15 +839,26 @@ select.inp option{background:var(--sf2);}
         <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;"><span class="badge b-pu" id="profileSchool">Your School</span><span class="badge b-gr">2 Career Matches</span></div>
       </div>
       <div class="sc px" style="padding-top:6px;">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
-          <div style="background:var(--sf2);border-radius:var(--rs);padding:13px;text-align:center;"><div style="font-size:20px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">4</div><div style="font-size:10px;color:var(--tx3);">Tests Done</div></div>
-          <div style="background:var(--sf2);border-radius:var(--rs);padding:13px;text-align:center;"><div style="font-size:20px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">3</div><div style="font-size:10px;color:var(--tx3);">Career Paths</div></div>
-          <div style="background:var(--sf2);border-radius:var(--rs);padding:13px;text-align:center;"><div style="font-size:20px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">2</div><div style="font-size:10px;color:var(--tx3);">Saved</div></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
+              <div style="background:var(--sf2);border-radius:var(--rs);padding:13px;text-align:center;"><div id="profileTests" style="font-size:20px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">0</div><div style="font-size:10px;color:var(--tx3);">Tests Done</div></div>
+              <div style="background:var(--sf2);border-radius:var(--rs);padding:13px;text-align:center;"><div id="profileCareerCount" style="font-size:20px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">0</div><div style="font-size:10px;color:var(--tx3);">Career Paths</div></div>
+              <div style="background:var(--sf2);border-radius:var(--rs);padding:13px;text-align:center;"><div id="profileSavedCount" style="font-size:20px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">0</div><div style="font-size:10px;color:var(--tx3);">Saved</div></div>
         </div>
+        <div id="profileAssessmentSummary" style="margin-bottom:16px;padding:14px;border:1px solid var(--br);border-radius:var(--r);background:rgba(255,255,255,0.02);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--tx);">Assessment Summary</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="badge b-pu" id="profileSummaryTests">0 / 4 tests completed</div>
+            <div class="badge b-gr" id="profileSummaryStatus">No recent results</div>
+          </div>
+          <div id="profileSummaryDetail" style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.5;">Complete all tests to unlock career recommendations on your profile.</div>
+          <div id="profileTestDetail" style="font-size:12px;color:var(--tx2);margin-top:12px;line-height:1.6;"></div>
+        </div>
+        <div id="profileResultPreview" style="margin-bottom:16px;display:none;"></div>
         <div style="font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Account</div>
         <div class="setrow" onclick="G('profile-basic')"><div class="setico" style="background:rgba(79,70,229,.1);">&#128100;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Edit Profile</div><div style="font-size:12px;color:var(--tx3);">Update personal information</div></div><span style="color:var(--tx3);">&#8250;</span></div>
-        <div class="setrow" onclick="G('profile-upload')"><div class="setico" style="background:rgba(16,185,129,.1);">&#128196;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Upload Results</div><div style="font-size:12px;color:var(--tx3);">Add or update your result documents</div></div><span style="color:var(--tx3);">&#8250;</span></div>
-        <div class="setrow" onclick="G('view-results')"><div class="setico" style="background:rgba(79,70,229,.06);">&#128194;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">View Uploaded Results</div><div style="font-size:12px;color:var(--tx3);">See Excel and manual grades you added</div></div><span style="color:var(--tx3);">&#8250;</span></div>
+        <div class="setrow" onclick="G('profile-upload')"><div class="setico" style="background:rgba(16,185,129,.1);">&#128196;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Upload Results</div><div style="font-size:12px;color:var(--tx3);">Enter your grades manually for the next assessment</div></div><span style="color:var(--tx3);">&#8250;</span></div>
+        <div class="setrow" id="profileAssessmentActionRow" onclick="startAssessmentFromProfile()"><div class="setico" style="background:rgba(79,70,229,.1);">&#128300;</div><div style="flex:1;"><div id="profileAssessmentActionTitle" style="font-size:14px;font-weight:500;">Start Assessment</div><div id="profileAssessmentActionDesc" style="font-size:12px;color:var(--tx3);">Take your tests and unlock career recommendations</div></div><span style="color:var(--tx3);">&#8250;</span></div>
+        <div class="setrow" onclick="G('view-results')"><div class="setico" style="background:rgba(79,70,229,.06);">&#128194;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Review Grades</div><div style="font-size:12px;color:var(--tx3);">Check the manual grades you entered</div></div><span style="color:var(--tx3);">&#8250;</span></div>
         <div style="font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;">Assessments</div>
         <div class="setrow" onclick="G('history')"><div class="setico" style="background:rgba(245,158,11,.1);">&#128203;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Assessment History</div><div style="font-size:12px;color:var(--tx3);">View past results and retake schedule</div></div><span style="color:var(--tx3);">&#8250;</span></div>
         <div class="setrow" onclick="G('career-results')"><div class="setico" style="background:rgba(124,58,237,.1);">&#127919;</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Career Recommendations</div><div style="font-size:12px;color:var(--tx3);">View your latest AI recommendations</div></div><span style="color:var(--tx3);">&#8250;</span></div>
@@ -912,15 +923,19 @@ const APP = {
   uploaded: [],       // e.g. ['SSS 2','SSS 3']
   subjectGrades: {},  // Merged view of manual + file grades for display
   manualGrades: {},   // grades entered manually via the form
-  fileUploadedGrades: {}, // grades extracted from uploaded Excel files
+  fileUploadedGrades: {}, // legacy file grades, not used in the current manual-only flow
   testsDone: {},      // { 'SSS 2': true }
   loggedIn: false,
   notif: true,
   assessmentResults: null,
   recommendationPending: false,
   assessmentSession: null,
+  canEnterTests: false,
+  allowedTestPage: '',
+  navHistory: [],
   history: [],
-  savedCareers: []
+  savedCareers: [],
+  isRetaking: false
 };
 
 let currentCareerName = '';
@@ -1162,10 +1177,10 @@ const UPLOAD_RULES = {
   'SSS 3':['SSS 1','SSS 2','SSS 3']
 };
 const TESTS = [
-  {id:'aptitude-test',  icon:'&#129518;', title:'Aptitude Test',      sub:'Logical reasoning · 10 questions · 15 min', category: 'aptitude'},
-  {id:'cognitive-test', icon:'&#129504;', title:'Cognitive Test',      sub:'Memory & processing · 10 questions · 15 min', category: 'cognitive'},
-  {id:'personality-test',icon:'&#129494;',title:'Personality Test',   sub:'Traits & behaviour · 10 questions · 10 min', category: 'personality'},
-  {id:'interest-test',  icon:'&#11088;',  title:'Interest Inventory', sub:'Career interests · 10 questions · 10 min', category: 'psychometric'},
+  {id:'aptitude-test',  icon:'&#129518;', title:'Aptitude Test',      sub:'Logical reasoning · 10 questions', category: 'aptitude'},
+  {id:'cognitive-test', icon:'&#129504;', title:'Cognitive Test',      sub:'Memory & processing · 10 questions', category: 'cognitive'},
+  {id:'personality-test',icon:'&#129494;',title:'Personality Test',   sub:'Traits & behaviour · 10 questions', category: 'personality'},
+  {id:'interest-test',  icon:'&#11088;',  title:'Interest Test', sub:'Career interests · 10 questions', category: 'psychometric'},
 ];
 
 function lvlIdx(l){ return LEVELS.indexOf(l); }
@@ -1312,12 +1327,16 @@ async function handleLogin() {
     TEST_RUNNER.answers = {};
     APP.testsDone = {};
     APP.assessmentResults = null;
+    APP.navHistory = [];
+    APP.canEnterTests = false;
+    APP.allowedTestPage = '';
     
     await loadAssessmentSession();
     await loadHistory();
     
     T('Welcome back, ' + APP.user.name + ' 👋');
-    G('assessment-hub');
+    const nextScreen = APP.school.name && APP.school.dept ? 'my-profile' : 'profile-basic';
+    G(nextScreen);
   } catch (e) {
     showErr('Server connection failed. Try again.');
   }
@@ -1386,6 +1405,9 @@ async function handleSignup() {
     TEST_RUNNER.answers = {};
     APP.testsDone = {};
     APP.assessmentResults = null;
+    APP.navHistory = [];
+    APP.canEnterTests = false;
+    APP.allowedTestPage = '';
     
     T('Account created successfully!');
     G('profile-basic');
@@ -1407,6 +1429,7 @@ async function runRecommendationFlow(){
     const data = await response.json();
     APP.assessmentResults = data;
     APP.recommendationPending = false;
+    APP.isRetaking = false;
     
     await loadHistory();
     
@@ -1436,6 +1459,8 @@ function renderResultsPage(){
 
   const prediction = APP.assessmentResults.prediction || {};
   const gemini = APP.assessmentResults.gemini_recommendation || {};
+  const profileSummary = APP.assessmentResults.profile_summary || {};
+  const testScores = APP.assessmentResults.test_scores || {};
   const top3 = Array.isArray(prediction.top_3) ? prediction.top_3 : [];
   
   const primary = top3[0] || { 
@@ -1450,6 +1475,31 @@ function renderResultsPage(){
     career: 'Electrical Engineering', 
     confidence_percent: Math.max(45, (prediction.confidence_percent || 75) - 22) 
   };
+
+  const hasSummary = profileSummary.department;
+  const aptScore = testScores.aptitude_score_10 != null ? testScores.aptitude_score_10.toFixed(1) : 'N/A';
+  const cogScore = testScores.cognitive_score_10 != null ? testScores.cognitive_score_10.toFixed(1) : 'N/A';
+  const psyScore = testScores.psychometric_avg_5 != null ? testScores.psychometric_avg_5.toFixed(2) : 'N/A';
+  const perScore = testScores.sentiment_avg_5 != null ? testScores.sentiment_avg_5.toFixed(2) : 'N/A';
+
+  const profilePanel = hasSummary ? `
+    <div class="card" style="margin-bottom:14px;padding:14px 16px;background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);">
+      <div style="font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">📊 Your Academic Profile</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="font-size:12px;"><span style="color:var(--tx3);">Department</span><br><strong>${profileSummary.department || '—'}</strong></div>
+        <div style="font-size:12px;"><span style="color:var(--tx3);">Academic Strength</span><br><strong>${profileSummary.academic_strength || '—'}</strong></div>
+        <div style="font-size:12px;"><span style="color:var(--tx3);">CGPA</span><br><strong>${profileSummary.cgpa != null ? profileSummary.cgpa.toFixed(2) + ' / 5.0' : '—'}</strong></div>
+        <div style="font-size:12px;"><span style="color:var(--tx3);">WAEC Credits</span><br><strong>${profileSummary.waec_credits != null ? profileSummary.waec_credits + ' subjects' : '—'}</strong></div>
+        <div style="font-size:12px;"><span style="color:var(--tx3);">Best Subject Group</span><br><strong>${profileSummary.best_subject_category || '—'}</strong></div>
+        <div style="font-size:12px;"><span style="color:var(--tx3);">Course Alignment</span><br><strong style="color:${profileSummary.course_alignment === 1 ? 'var(--gr)' : 'var(--a2)'}">${profileSummary.course_alignment === 1 ? '✓ Excellent' : '⚠ Review'}</strong></div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--br);display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div style="font-size:11px;color:var(--tx3);">Aptitude: <strong style="color:var(--pl);">${aptScore}/10</strong></div>
+        <div style="font-size:11px;color:var(--tx3);">Cognitive: <strong style="color:var(--pl);">${cogScore}/10</strong></div>
+        <div style="font-size:11px;color:var(--tx3);">Psychometric: <strong style="color:var(--pl);">${psyScore}/5</strong></div>
+        <div style="font-size:11px;color:var(--tx3);">Personality: <strong style="color:var(--pl);">${perScore}/5</strong></div>
+      </div>
+    </div>` : '';
 
   const listContainer = document.querySelector('#career-results .sc');
   if (listContainer) {
@@ -1486,6 +1536,8 @@ function renderResultsPage(){
         </div>
       </div>
       
+      ${profilePanel}
+
       <div class="card card-g" style="margin-top: 14px; padding: 16px;">
         <div style="font-size:11px;color:var(--pl);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">💡 Detailed Mentor Advice</div>
         <div id="aiSummaryReport" style="font-size:13px;color:var(--tx2);line-height:1.65; font-family: 'DM Sans', sans-serif;">
@@ -1687,16 +1739,60 @@ function startTest(category) {
     return;
   }
   
-  TEST_RUNNER.category = category;
-  TEST_RUNNER.questions = testData.questions;
-  TEST_RUNNER.currentIndex = 0;
-  
   const pageId = category === 'aptitude' ? 'aptitude-test' :
                  category === 'cognitive' ? 'cognitive-test' :
                  category === 'personality' ? 'personality-test' : 'interest-test';
-                 
+  APP.canEnterTests = true;
+  APP.allowedTestPage = pageId;
+  TEST_RUNNER.category = category;
+  TEST_RUNNER.questions = testData.questions;
+  TEST_RUNNER.currentIndex = 0;
+   
   renderCurrentQuestion();
   G(pageId);
+}
+
+function beginAssessmentSequence(forceRetake = false) {
+  const completedCount = Object.values(APP.testsDone).filter(Boolean).length;
+  const hasPastAssessment = APP.history.length > 0 || !!APP.assessmentResults;
+
+  if (forceRetake || (hasPastAssessment && completedCount === 0)) {
+    APP.testsDone = {};
+    TEST_RUNNER.answers = {};
+    APP.assessmentResults = null;
+    APP.recommendationPending = false;
+    APP.isRetaking = true;
+  }
+
+  if (completedCount === 4 && !forceRetake) {
+    if (APP.assessmentResults) {
+      G('career-results');
+    } else {
+      G('processing');
+    }
+    return;
+  }
+ 
+  let nextCategory = 'aptitude';
+  if (!APP.testsDone.current_0) nextCategory = 'aptitude';
+  else if (!APP.testsDone.current_1) nextCategory = 'cognitive';
+  else if (!APP.testsDone.current_2) nextCategory = 'personality';
+  else if (!APP.testsDone.current_3) nextCategory = 'psychometric';
+ 
+  startTest(nextCategory);
+}
+
+function navBack() {
+ if (APP.navHistory.length === 0) {
+   const active = document.querySelector('.page.active');
+   if (active && active.id === 'login') return G('splash');
+   if (active && active.id === 'signup') return G('onboard');
+   if (active && active.id === 'profile-basic') return G('signup');
+   return G('my-profile');
+ }
+ const prev = APP.navHistory.pop();
+ APP.navigatingBack = true;
+ G(prev);
 }
 
 function renderCurrentQuestion() {
@@ -1713,7 +1809,7 @@ function renderCurrentQuestion() {
   const total = TEST_RUNNER.questions.length;
   const currNum = TEST_RUNNER.currentIndex + 1;
   const pct = Math.round((currNum / total) * 100);
-  
+   
   const progressText = pageEl.querySelector('.ptrack').previousElementSibling.querySelector('span');
   progressText.textContent = `Question ${currNum} of ${total}`;
   progressText.nextElementSibling.textContent = `${pct}%`;
@@ -1825,10 +1921,19 @@ const SCREENS = ['splash','onboard','login','signup','profile-basic','profile-up
 
 function G(id){
   if(!validateTransition(id)) return;
+  const current = document.querySelector('.page.active');
+  if(current && current.id !== id && !APP.navigatingBack) {
+    APP.navHistory.push(current.id);
+  }
+  APP.navigatingBack = false;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const t=document.getElementById(id);
   if(t){ t.classList.add('active'); document.getElementById('PS').scrollTop=0; updateSL(id); }
-  
+  if(!['aptitude-test','cognitive-test','personality-test','interest-test'].includes(id)){
+    APP.canEnterTests = false;
+    APP.allowedTestPage = '';
+  }
+   
   if(id==='assessment-hub'){ 
     if(!APP.assessmentSession && APP.loggedIn) {
       loadAssessmentSession().then(() => renderAssessHub());
@@ -1846,10 +1951,61 @@ function G(id){
 }
 
 function validateTransition(dest){
-  if(['assessment-hub','aptitude-test','cognitive-test','personality-test','interest-test','my-profile','history','career-results'].includes(dest)){
+  const allowedPreLogin = ['splash','onboard','login','signup'];
+  if (!APP.loggedIn && !allowedPreLogin.includes(dest)) {
+    showErr('Please sign in first');
+    G('login');
+    return false;
+  }
+
+  if(['assessment-hub','aptitude-test','cognitive-test','personality-test','interest-test','processing','career-results','career-detail','my-profile','history'].includes(dest)){
     if(!APP.loggedIn){ showErr('Please sign in first'); G('login'); return false; }
   }
-  
+   
+  if (['assessment-hub','aptitude-test','cognitive-test','personality-test','interest-test','processing'].includes(dest)) {
+    const targetLevel = getTargetUploadLevel();
+    if (!APP.uploaded.includes(targetLevel)) {
+      showErr('Please enter and save your '+targetLevel+' results first.');
+      G('profile-upload');
+      return false;
+    }
+  }
+
+  if (['aptitude-test','cognitive-test','personality-test','interest-test'].includes(dest)) {
+    if (!APP.canEnterTests || APP.allowedTestPage !== dest) {
+      showErr('Please start your tests from the assessment hub.');
+      return false;
+    }
+  }
+   
+  if (dest === 'processing') {
+    const testsComplete = Object.values(APP.testsDone).filter(Boolean).length === 4;
+    if (!testsComplete) {
+      showErr('Complete all tests before processing your recommendations.');
+      G('assessment-hub');
+      return false;
+    }
+  }
+   
+  if (dest === 'career-results') {
+    if (!APP.assessmentResults) {
+      if (APP.history.length > 0 && APP.history[0].payload) {
+        APP.assessmentResults = APP.history[0].payload;
+      } else {
+        showErr('Process your test results first to view career recommendations.');
+        G('assessment-hub');
+        return false;
+      }
+    }
+  }
+   
+  if (dest === 'career-detail') {
+    if (!currentCareerName) {
+      showErr('Select a career recommendation first.');
+      return false;
+    }
+  }
+   
   if (['aptitude-test','cognitive-test','personality-test','interest-test'].includes(dest)) {
     const { can, reason } = canTakeTest();
     if (!can) {
@@ -1858,7 +2014,7 @@ function validateTransition(dest){
     }
   }
   
-  if (dest === 'profile-upload') {
+  if (dest === 'profile-upload' || dest === 'profile-interests') {
     const cur = document.querySelector('.page.active');
     if (cur && cur.id === 'profile-basic') {
       const sName = cur.querySelector('input[type="text"]');
@@ -1870,7 +2026,7 @@ function validateTransition(dest){
         else s.style.borderColor='';
       });
       if(!ok){ showErr('Please complete all school details'); return false; }
-      
+       
       syncProfileData();
     }
   }
@@ -1977,38 +2133,6 @@ function getTargetUploadLevel() {
   return 'SSS 1';
 }
 
-function switchUploadTab(tabName){
-  const tabAuto = document.getElementById('tab-auto');
-  const tabManual = document.getElementById('tab-manual');
-  const btnAuto = document.getElementById('btn-tab-auto');
-  const btnManual = document.getElementById('btn-tab-manual');
-  
-  if(tabName === 'auto'){
-    if(tabAuto) tabAuto.style.display = 'block';
-    if(tabManual) tabManual.style.display = 'none';
-    if(btnAuto) btnAuto.classList.add('active');
-    if(btnManual) btnManual.classList.remove('active');
-  } else {
-    if(tabAuto) tabAuto.style.display = 'none';
-    if(tabManual) tabManual.style.display = 'block';
-    if(btnAuto) btnAuto.classList.remove('active');
-    if(btnManual) btnManual.classList.add('active');
-    renderManualGradeForm();
-  }
-}
-
-function resetDropzone(){
-  const dropzone = document.getElementById('excel_dropzone');
-  if(!dropzone) return;
-  dropzone.classList.remove('uploaded');
-  dropzone.innerHTML = `
-    <div class="uico" style="background:rgba(79,70,229,0.1);color:var(--pl);font-size:24px;">📁</div>
-    <div style="font-size:14px;font-weight:600;" id="dropzone_title">Drag & Drop your Excel file here</div>
-    <div style="font-size:12px;color:var(--tx3);" id="dropzone_sub">or click to browse files (.xlsx, .xls)</div>
-    <input type="file" id="excel_file" accept=".xlsx,.xls" style="display:none;" onchange="handleSingleExcelUpload(this)">
-  `;
-}
-
 function renderUploadSlots(){
   const el = document.getElementById('uploadSlots');
   if(!el) return;
@@ -2016,151 +2140,51 @@ function renderUploadSlots(){
   const currentLevel = APP.school.classLevel || 'SSS 1';
   const targetLevel = getTargetUploadLevel();
   const dept = APP.school.dept || 'Science';
+  const hasGrades = Object.keys(APP.manualGrades || {}).length > 0;
+  const isSaved = APP.uploaded.includes(targetLevel);
 
   let html = `
     <div class="card-g card" style="margin-bottom:12px;padding:12px 16px;">
       <div style="font-size:12px;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;">Academic Profile Details</div>
       <div style="margin-top:6px;display:flex;gap:12px;flex-wrap:wrap;">
         <span class="badge b-pu">Registered Class: ${currentLevel}</span>
-        <span class="badge b-am">Result Entry for: ${targetLevel}</span>
+        <span class="badge b-am">Manual Grades for: ${targetLevel}</span>
         <span class="badge b-gr">Department: ${dept}</span>
       </div>
     </div>
   `;
 
   html += `
-    <div class="tabnav">
-      <button class="tabbtn active" id="btn-tab-auto" onclick="switchUploadTab('auto')">Excel Upload</button>
-      <button class="tabbtn" id="btn-tab-manual" onclick="switchUploadTab('manual')">Manual Grade Entry</button>
-    </div>
-    
-    <div id="tab-auto" class="tabcont" style="display:block;">
-      <div style="font-size:13px;color:var(--tx2);margin-bottom:12px;line-height:1.5;">
-        Upload your end-of-year results for <strong>${targetLevel}</strong>. The Excel file must contain <strong>Subject</strong> and <strong>Score</strong> columns, following the sample grade structure.
-      </div>
-      <div class="uzone" id="excel_dropzone" onclick="document.getElementById('excel_file').click()">
-        <div class="uico" style="background:rgba(79,70,229,0.1);color:var(--pl);font-size:24px;">📁</div>
-        <div style="font-size:14px;font-weight:600;" id="dropzone_title">Drag & Drop your Excel file here</div>
-        <div style="font-size:12px;color:var(--tx3);" id="dropzone_sub">or click to browse files (.xlsx, .xls)</div>
-        <input type="file" id="excel_file" accept=".xlsx,.xls" style="display:none;" onchange="handleSingleExcelUpload(this)">
-      </div>
-      <div id="uploadPreview" style="margin-top:12px;"></div>
-      <div id="uploadActions" style="margin-top:12px;"></div>
-    </div>
-    
-    <div id="tab-manual" class="tabcont" style="display:none;">
-      <div id="manualGradeForm"></div>
-    </div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:16px;line-height:1.6;">Enter your year-end grades manually for the required subjects. Save your inputs to continue to the assessment hub.</div>
+    <div id="manualGradeForm"></div>
   `;
 
-  el.innerHTML = html;
-  renderUploadPreview();
-}
-
-async function handleSingleExcelUpload(input){
-  const file = input.files[0];
-  if(!file) return;
-  
-  // Show file indicator in dropzone
-  const dropzone = document.getElementById('excel_dropzone');
-  if(dropzone) {
-    dropzone.classList.add('uploaded');
-    dropzone.innerHTML = `
-      <div class="uico" style="background:rgba(16,185,129,0.1);color:var(--gr);font-size:24px;">✅</div>
-      <div style="font-size:14px;font-weight:600;color:var(--gr);">${file.name}</div>
-      <div style="font-size:12px;color:var(--tx3);">Click to replace file</div>
-      <input type="file" id="excel_file" accept=".xlsx,.xls" style="display:none;" onchange="handleSingleExcelUpload(this)">
+  if(isSaved){
+    html += `
+      <div style="margin-top:18px;padding:16px;border:1px solid rgba(16,185,129,.2);border-radius:var(--rs);background:rgba(16,185,129,.08);text-align:center;">
+        <div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:10px;">Ready to continue</div>
+        <div style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px;">Your saved results are ready. Continue to the assessment hub to start your tests.</div>
+        <button class="btn btn-p btn-sm" onclick="G('assessment-hub')">Continue to Assessment Hub</button>
+      </div>
+    `;
+  } else if (hasGrades) {
+    html += `
+      <div style="margin-top:18px;padding:16px;border:1px solid rgba(245,158,11,.2);border-radius:var(--rs);background:rgba(245,158,11,.08);text-align:center;">
+        <div style="font-size:13px;font-weight:600;color:var(--yw);margin-bottom:10px;">Save your grades first</div>
+        <div style="font-size:12px;color:var(--tx2);line-height:1.6;">Your manual grades are entered. Tap Save Manual Results to lock them in before continuing.</div>
+      </div>
     `;
   }
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('level', getTargetUploadLevel());
-  try{
-    const res = await fetch(API_BASE_URL + '/upload_results', { method: 'POST', body: formData });
-    const data = await res.json();
-    if(data.status==='success'){
-      APP.fileUploadedGrades = data.grades || {};
-      APP.subjectGrades = Object.assign({}, APP.fileUploadedGrades || {}, APP.manualGrades || {});
-      const level = data.level;
-      if(level && !APP.uploaded.includes(level)) APP.uploaded.push(level);
-      T('Excel file parsed successfully!');
-      renderUploadPreview();
-    } else {
-      T(data.detail || 'Failed to parse file');
-      resetDropzone();
-    }
-  }catch(e){
-    console.error(e);
-    T('Failed to parse file');
-    resetDropzone();
-  }
+  html += `
+    <div style="font-size:12px;color:var(--tx3);margin-top:14px;line-height:1.6;">This app now accepts only manual grade entry. Files and Excel uploads are removed for a simpler, mobile-friendly flow.</div>
+  `;
+
+  el.innerHTML = html;
+  renderManualGradeForm();
 }
 
-function renderUploadPreview(){
-  const previewEl = document.getElementById('uploadPreview');
-  const actionsEl = document.getElementById('uploadActions');
-  if(!previewEl || !actionsEl) return;
-
-  const grades = APP.subjectGrades || {};
-  const keys = Object.keys(grades);
-  if(keys.length===0){
-    previewEl.innerHTML = `<div style="font-size:12px;color:var(--tx3);text-align:center;padding:10px 0;">No extracted subjects yet. Upload an Excel file to begin.</div>`;
-    actionsEl.innerHTML = '';
-    return;
-  }
-
-  let html = '<div style="overflow:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px;border-bottom:1px solid rgba(0,0,0,.06);font-size:12px;color:var(--tx3);">Subject</th><th style="text-align:left;padding:8px;border-bottom:1px solid rgba(0,0,0,.06);font-size:12px;color:var(--tx3);">Grade</th><th style="text-align:left;padding:8px;border-bottom:1px solid rgba(0,0,0,.06);font-size:12px;color:var(--tx3);">Source</th></tr></thead><tbody>';
-  keys.forEach(k => {
-    const display = k.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase());
-    const val = grades[k] || '';
-    const source = (APP.manualGrades && APP.manualGrades[k]) ? 'Manual' : (APP.fileUploadedGrades && APP.fileUploadedGrades[k]) ? 'File' : 'Default';
-    html += `<tr><td style="padding:8px;border-bottom:1px solid rgba(0,0,0,.03);font-size:13px;">${display}</td><td style="padding:8px;border-bottom:1px solid rgba(0,0,0,.03);"><select class="inp" style="padding:3px 6px;font-size:12px;height:28px;width:80px;" onchange="updateUploadedGrade('${k}', this.value)"><option value="">Select</option><option value="A" ${val==='A'?'selected':''}>A</option><option value="B" ${val==='B'?'selected':''}>B</option><option value="C" ${val==='C'?'selected':''}>C</option><option value="D" ${val==='D'?'selected':''}>D</option><option value="E" ${val==='E'?'selected':''}>E</option><option value="F" ${val==='F'?'selected':''}>F</option></select></td><td style="padding:8px;border-bottom:1px solid rgba(0,0,0,.03);font-size:11px;color:var(--tx3);">${source}</td></tr>`;
-  });
-  html += '</tbody></table></div>';
-  previewEl.innerHTML = html;
-
-  actionsEl.innerHTML = `<div style="display:flex;gap:8px;margin-top:10px;">
-    <button class="btn btn-p btn-sm" onclick="saveUploadedResults()">Save Results</button>
-    <button class="btn btn-ghost" onclick="clearUploadedPreview()">Clear</button>
-  </div>`;
-}
-
-function updateUploadedGrade(key, val){
-  APP.manualGrades[key] = val;
-  APP.subjectGrades = Object.assign({}, APP.fileUploadedGrades || {}, APP.manualGrades || {});
-  renderUploadPreview();
-}
-
-function clearUploadedPreview(){
-  APP.fileUploadedGrades = {};
-  APP.subjectGrades = Object.assign({}, APP.fileUploadedGrades || {}, APP.manualGrades || {});
-  resetDropzone();
-  renderUploadPreview();
-}
-
-async function saveUploadedResults(){
-  const studentId = APP.user.email || 'guest';
-  if(studentId==='guest'){ showErr('Please sign in to save results'); G('login'); return; }
-  const targetLevel = getTargetUploadLevel();
-  try{
-    const payload = { student_id: studentId, level: targetLevel, subject_grades: APP.subjectGrades, manual_grades: APP.manualGrades || {}, file_grades: APP.fileUploadedGrades || {} };
-    const res = await fetch(API_BASE_URL + '/save_results', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-    const data = await res.json();
-    if(data && (data.status==='success' || data.success)){
-      T('Results saved to profile');
-      if(!APP.uploaded.includes(targetLevel)) APP.uploaded.push(targetLevel);
-      await fetch(API_BASE_URL + '/update_profile', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student_id: studentId, uploaded_results: JSON.stringify(payload) }) });
-      renderUploadSlots();
-    } else {
-      T('Failed to save results');
-    }
-  }catch(e){ console.error(e); T('Failed to save results'); }
-}
-
-
-function renderManualGradeForm() {
-  const container = document.getElementById('manualGradeForm');
+function renderManualGradeForm() {  const container = document.getElementById('manualGradeForm');
   if(!container) return;
   
   const dept = APP.school.dept || 'Science';
@@ -2267,7 +2291,7 @@ function renderViewResults(){
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
       <div style="background:var(--sf2);border-radius:var(--rs);padding:10px 6px;text-align:center;border:1px solid var(--br);">
         <div style="font-size:16px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">${subjects.length}</div>
-        <div style="font-size:9px;color:var(--tx3);margin-top:2px;">Subjects Graded</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:2px;">Subjects Entered</div>
       </div>
       <div style="background:var(--sf2);border-radius:var(--rs);padding:10px 6px;text-align:center;border:1px solid var(--br);">
         <div style="font-size:12px;font-weight:700;font-family:'Sora',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" class="gt">${dept}</div>
@@ -2275,18 +2299,18 @@ function renderViewResults(){
       </div>
       <div style="background:var(--sf2);border-radius:var(--rs);padding:10px 6px;text-align:center;border:1px solid var(--br);">
         <div style="font-size:16px;font-weight:700;font-family:'Sora',sans-serif;" class="gt">${completedLevels.length}</div>
-        <div style="font-size:9px;color:var(--tx3);margin-top:2px;">Levels Uploaded</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:2px;">Levels Saved</div>
       </div>
     </div>
   `;
 
   html += `
     <div class="card" style="margin-bottom:12px;padding:12px 14px;">
-      <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--tx2);">Uploaded Levels Status</div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--tx2);">Saved Levels Status</div>
   `;
   if(!completedLevels || completedLevels.length===0){
-    html += `<div style="font-size:12px;color:var(--tx3);">No levels uploaded yet. Go to Upload Results page.</div>`;
-  } else {
+    html += `    <div style="font-size:12px;color:var(--tx3);">No saved results yet. Go to Upload Results page.</div>
+`;  } else {
     html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
     completedLevels.forEach(l => { 
       html += `<span class="badge b-pu" style="font-size:10px;">${l} Total Result ✓</span>`; 
@@ -2309,7 +2333,7 @@ function renderViewResults(){
       const display = s.replace(/_/g,' ').replace(/\b\w/g, l => l.toUpperCase());
       const isManual = (APP.manualGrades && APP.manualGrades[s] !== undefined);
       const isFile = (APP.fileUploadedGrades && APP.fileUploadedGrades[s] !== undefined);
-      const srcText = (isManual && isFile) ? 'Merged' : isManual ? 'Manual' : isFile ? 'Excel File' : 'Default';
+      const srcText = (isManual && isFile) ? 'Merged' : isManual ? 'Manual' : isFile ? 'Saved' : 'Default';
       const srcClass = isManual ? 'b-pu' : isFile ? 'b-gr' : 'b-am';
       
       const grade = APP.subjectGrades[s] || 'C';
@@ -2359,6 +2383,12 @@ function renderViewResults(){
 
 /* ── Assessment hub ── */
 function renderAssessHub(){
+  const userName = APP.user.name || 'Student';
+  const userInitial = (userName[0] || 'S').toUpperCase();
+  const nameEl = document.getElementById('assessHubUserName');
+  const avatarEl = document.getElementById('assessHubAvatar');
+  if (nameEl) nameEl.textContent = userName;
+  if (avatarEl) avatarEl.textContent = userInitial;
   const {can,reason}=canTakeTest();
   const lockEl=document.getElementById('testLockInfo');
   if(lockEl){
@@ -2368,23 +2398,43 @@ function renderAssessHub(){
   }
   const cardsEl=document.getElementById('assessCards');
   if(!cardsEl) return;
-  let done=0;
+  const hasAssessmentHistory = !!APP.assessmentResults || APP.history.length > 0;
+  const testsDoneCount = Object.values(APP.testsDone).filter(Boolean).length;
+  const displayDone = hasAssessmentHistory && testsDoneCount === 0 && !APP.isRetaking ? 4 : testsDoneCount;
+  const canRetake = hasAssessmentHistory && testsDoneCount === 0 && !APP.isRetaking;
   let html='';
   TESTS.forEach((t,i)=>{
-    const isDone=!!(APP.testsDone['current_'+i]);
-    const isNext=!isDone&&TESTS.slice(0,i).every((_,j)=>APP.testsDone['current_'+j]);
-    if(isDone) done++;
-    html+=`<div class="ascard ${isDone?'done':isNext&&can?'nxt':!can&&!isDone?'locked':''}" onclick="${!can&&!isDone?`T('Tests locked. ${reason.split('.')[0]}.')`:isDone?`T('Already completed')`:(`startTest('${t.category}')`)}">
+    const isDone = !!(APP.testsDone['current_'+i]) || (hasAssessmentHistory && !APP.isRetaking);
+    const isNext = !isDone && TESTS.slice(0,i).every((_,j)=>APP.testsDone['current_'+j]);
+    const cardHint = isDone ? 'Already completed' : `Use the ${hasAssessmentHistory && !APP.isRetaking ? 'Retake Tests' : 'Start Tests'} button below to begin your assessment.`;
+    html+=`<div class="ascard ${isDone?'done':isNext&&can?'nxt':!can&&!isDone?'locked':''}" onclick="T('${cardHint.replace(/'/g, "\\'")}')">
       <div class="asnum">${isDone?'&#10003;':t.icon}</div>
       <div style="flex:1;"><div style="font-size:14px;font-weight:600;margin-bottom:2px;">${t.title}</div><div style="font-size:11px;color:var(--tx3);">${t.sub}</div></div>
       ${isDone?`<span class="badge b-gr">Done</span>`:isNext&&can?`<span class="badge b-pu">Next</span>`:!can&&!isDone?`<span class="badge b-rd">Locked</span>`:`<span style="color:var(--tx3);font-size:18px;">&#8250;</span>`}
     </div>`;
   });
   cardsEl.innerHTML=html;
-  const pct=Math.round(done/4*100);
+  const pct=Math.round(displayDone/4*100);
   const pb=document.getElementById('progBar'), pl=document.getElementById('progLabel');
   if(pb) pb.style.width=pct+'%';
-  if(pl) pl.textContent=`${done} / 4 Done`;
+  if(pl) pl.textContent=`${displayDone} / 4 Done`;
+
+  const actionEl = document.getElementById('assessmentAction');
+  if(actionEl){
+    if(displayDone === 4){
+      if(APP.assessmentResults){
+        actionEl.innerHTML = `<div style="margin:18px 0 0;padding:16px;border:1px solid rgba(16,185,129,.2);border-radius:var(--rs);background:rgba(16,185,129,.08);text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--gr);margin-bottom:10px;">All tests are complete</div><div style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px;">Your career recommendations are ready. Continue to view your AI-guided results.</div><button class="btn btn-p btn-sm" onclick="G('career-results')">See Career Recommendations</button></div>`;
+      } else if (canRetake) {
+        actionEl.innerHTML = `<div style="margin:18px 0 0;padding:16px;border:1px solid rgba(79,70,229,.15);border-radius:var(--rs);background:rgba(79,70,229,.06);text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--pl);margin-bottom:10px;">Retake Tests</div><div style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px;">You have previous assessment results. Start a new assessment run to refresh your career recommendations.</div><button class="btn btn-p btn-sm" onclick="beginAssessmentSequence(true)">Retake Tests</button></div>`;
+      } else {
+        actionEl.innerHTML = `<div style="margin:18px 0 0;padding:16px;border:1px solid rgba(79,70,229,.15);border-radius:var(--rs);background:rgba(79,70,229,.06);text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--pl);margin-bottom:10px;">All tests have been completed</div><div style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px;">Click below to process your answers and unlock career recommendations.</div><button class="btn btn-p btn-sm" onclick="G('processing')">See Career Recommendations</button></div>`;
+      }
+    } else {
+      const startLabel = testsDoneCount === 0 ? (hasAssessmentHistory ? 'Retake Tests' : 'Start Tests') : 'Continue Tests';
+      const statusText = testsDoneCount === 0 ? (hasAssessmentHistory ? 'Begin a new assessment run by retaking your tests.' : 'Begin your assessment with the first test.') : `You have completed ${testsDoneCount} of 4 tests. Resume your assessment.`;
+      actionEl.innerHTML = `<div style="margin:18px 0 0;padding:16px;border:1px solid rgba(79,70,229,.15);border-radius:var(--rs);background:rgba(79,70,229,.06);text-align:center;"><div style="font-size:13px;font-weight:600;color:var(--pl);margin-bottom:10px;">${startLabel}</div><div style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px;">${statusText}</div><button class="btn btn-p btn-sm" onclick="beginAssessmentSequence()">${startLabel}</button></div>`;
+    }
+  }
 }
 
 /* ── Profile page render ── */
@@ -2393,10 +2443,94 @@ function renderProfilePage(){
   const s=document.getElementById('profileSub');
   const sc=document.getElementById('profileSchool');
   const av=document.getElementById('profileAvatar');
+  const tests=document.getElementById('profileTests');
+  const careers=document.getElementById('profileCareerCount');
+  const saved=document.getElementById('profileSavedCount');
   if(n) n.textContent=APP.user.name||'Your Name';
   if(s) s.textContent=`${APP.school.classLevel||'Class'} · ${APP.school.dept||'Dept'} · ${APP.school.state||'State'}`;
   if(sc) sc.textContent=APP.school.name||'Your School';
   if(av) av.textContent=(APP.user.name||'?')[0].toUpperCase();
+  const rawTestCount = Object.values(APP.testsDone).filter(Boolean).length;
+  const hasAssessmentHistory = !!APP.assessmentResults || APP.history.length > 0;
+  const testCount = rawTestCount || (hasAssessmentHistory && !APP.isRetaking ? 4 : 0);
+  const recommendationCount = APP.assessmentResults && APP.assessmentResults.prediction && Array.isArray(APP.assessmentResults.prediction.top_3) ? APP.assessmentResults.prediction.top_3.length : 0;
+  if(tests) tests.textContent = testCount;
+  if(careers) careers.textContent = recommendationCount;
+  if(saved) saved.textContent = APP.savedCareers.length;
+
+  const actionRow = document.getElementById('profileAssessmentActionRow');
+  const actionTitle = document.getElementById('profileAssessmentActionTitle');
+  const actionDesc = document.getElementById('profileAssessmentActionDesc');
+  if(actionRow && actionTitle && actionDesc){
+    actionRow.style.display = 'flex';
+    if(testCount === 0){
+      actionTitle.textContent = 'Take Tests';
+      actionDesc.textContent = APP.uploaded.length === 0 ? 'Upload your results then take your first set of tests.' : 'Go to the assessment hub to begin your tests.';
+    } else {
+      actionTitle.textContent = 'Retake Tests';
+      actionDesc.textContent = 'Return to the assessment hub to refresh your results or retake the assessments.';
+    }
+  }
+
+  const summaryTests = document.getElementById('profileSummaryTests');
+  const summaryStatus = document.getElementById('profileSummaryStatus');
+  const summaryDetail = document.getElementById('profileSummaryDetail');
+  const summaryTestDetail = document.getElementById('profileTestDetail');
+  if(summaryTests && summaryStatus && summaryDetail){
+    summaryTests.textContent = `${testCount} / 4 tests completed`;
+    if(testCount === 0){
+      summaryStatus.textContent = 'No tests taken yet';
+      summaryDetail.textContent = 'Upload your results and start your tests to receive career recommendations.';
+    } else if(testCount < 4){
+      summaryStatus.textContent = 'Assessment in progress';
+      summaryDetail.textContent = 'Continue your remaining tests from the assessment hub to complete your profile.';
+    } else {
+      summaryStatus.textContent = APP.assessmentResults ? 'Recommendations ready' : 'Tests completed';
+      summaryDetail.textContent = APP.assessmentResults ? 'Career recommendations are ready to view in the Results section.' : 'All tests are complete. Process your answers to unlock career recommendations.';
+    }
+  }
+
+  if(summaryTestDetail){
+    let testScores = null;
+    if (APP.assessmentResults && APP.assessmentResults.test_scores) {
+      testScores = APP.assessmentResults.test_scores;
+    }
+    const testStatusItems = TESTS.map((test, index) => {
+      const done = !!APP.testsDone['current_' + index] || (hasAssessmentHistory && testCount === 4 && !APP.isRetaking);
+      let scoreHtml = '';
+      if (done && testScores) {
+        if (index === 0 && testScores.aptitude_score_10 != null) scoreHtml = `<span style="font-size:11px;font-weight:600;color:var(--pl);margin-left:auto;">${testScores.aptitude_score_10.toFixed(1)}/10</span>`;
+        else if (index === 1 && testScores.cognitive_score_10 != null) scoreHtml = `<span style="font-size:11px;font-weight:600;color:var(--pl);margin-left:auto;">${testScores.cognitive_score_10.toFixed(1)}/10</span>`;
+        else if (index === 2 && testScores.sentiment_avg_5 != null) scoreHtml = `<span style="font-size:11px;font-weight:600;color:var(--pl);margin-left:auto;">${testScores.sentiment_avg_5.toFixed(1)}/5</span>`;
+        else if (index === 3 && testScores.psychometric_avg_5 != null) scoreHtml = `<span style="font-size:11px;font-weight:600;color:var(--pl);margin-left:auto;">${testScores.psychometric_avg_5.toFixed(1)}/5</span>`;
+      }
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="badge ${done ? 'b-gr' : 'b-am'}" style="padding:4px 8px;font-size:11px;">${done ? 'Done' : 'Pending'}</span><span style="font-size:12px;color:var(--tx2);">${test.title}</span>${scoreHtml}</div>`;
+    }).join('');
+    if(testCount === 0){
+      summaryTestDetail.innerHTML = 'No tests have been completed yet. Start your assessments from the hub once you have saved your results.';
+    } else {
+      summaryTestDetail.innerHTML = '<div style="font-size:12px;font-weight:600;color:var(--tx);margin-bottom:8px;">Assessment status</div>' + testStatusItems;
+    }
+  }
+
+  const previewEl = document.getElementById('profileResultPreview');
+  if(previewEl){
+    if(APP.assessmentResults && APP.assessmentResults.prediction){
+      const topCareer = APP.assessmentResults.prediction.top_3 && APP.assessmentResults.prediction.top_3[0] ? APP.assessmentResults.prediction.top_3[0].career : APP.assessmentResults.prediction.predicted_career || 'Recommended Career';
+      previewEl.style.display = 'block';
+      previewEl.innerHTML = `
+        <div class="card" style="padding:14px;">
+          <div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:8px;">Latest Assessment Outcome</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">${topCareer}</div>
+          <div style="font-size:12px;color:var(--tx3);line-height:1.6;">
+            ${APP.assessmentResults.prediction.summary || 'Review your career recommendations to see why this path matches your academic profile and interests.'}
+          </div>
+          <button class="btn btn-p btn-sm" style="margin-top:14px;" onclick="G('career-results')">View Recommendations</button>
+        </div>`;
+    } else {
+      previewEl.style.display = 'none';
+    }
+  }
 }
 
 /* ── UI helpers ── */
@@ -2414,8 +2548,14 @@ function signOut(){
   APP.assessmentSession=null;
   APP.history=[];
   APP.savedCareers=[];
+  APP.navHistory=[];
+  APP.canEnterTests=false;
+  APP.allowedTestPage='';
   G('splash'); 
   T('Signed out'); 
+}
+function startAssessmentFromProfile(){
+  G('assessment-hub');
 }
 function onClassChange(v){ 
   if(APP.school){ 
