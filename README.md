@@ -170,7 +170,7 @@ A suite of unit and integration tests was written and executed inside the projec
 
 ### Command Run:
 ```bash
-.venv\Scripts\pytest
+python -m pytest backend/ml_models/tests/test_backend.py -v --tb=short
 ```
 
 ### Results Summary:
