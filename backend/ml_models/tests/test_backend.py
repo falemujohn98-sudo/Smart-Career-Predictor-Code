@@ -61,7 +61,7 @@ def test_assessment_session_contains_questions():
 def test_grading_logic():
     answers = {
         "aptitude-1": "3 days", "aptitude-2": "40 cm²",
-        "cognitive-1": "School", "cognitive-2": "14",
+        "cognitive-1": "126", "cognitive-2": "wrong",
         "psychometric-1": "Strongly agree", "psychometric-2": "Agree",
         "personality-1": "Always", "personality-2": "Often", "personality-3": "Never"
     }

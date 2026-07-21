@@ -915,7 +915,14 @@ select.inp option{background:var(--sf2);}
    ============================================================ */
   
 /* ── App State ── */
-const API_BASE_URL = "https://smart-career-predictor-code.onrender.com";
+const isLocalEnv = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1' || 
+                   window.location.protocol === 'file:' || 
+                   !window.location.hostname;
+
+const API_BASE_URL = isLocalEnv 
+  ? (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:' ? window.location.origin : 'http://127.0.0.1:8000') 
+  : "https://smart-career-predictor-code.onrender.com";
 
 const APP = {
   user: { name:'', email:'', phone:'', dob:'', gender:'', password:'' },
@@ -1236,6 +1243,7 @@ async function syncProfileWithBackend() {
         uploaded_results: JSON.stringify(APP.uploaded)
       })
     });
+    await loadAssessmentSession();
   } catch (e) {
     console.error("Failed to sync profile:", e);
   }
@@ -1448,7 +1456,7 @@ function renderResultsPage(){
     if (listContainer) {
       listContainer.innerHTML = `
         <div style="padding:40px 20px;text-align:center;background:var(--sf);border-radius:var(--r);border:1px dashed var(--br2);">
-          <div style="font-size:36px;margin-bottom:12px;">🔒</div>
+          <div style="font-size:36px;margin-bottom:12px;"></div>
           <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;">Recommendations Locked</div>
           <p style="font-size:13px;color:var(--tx3);line-height:1.6;margin-bottom:16px;">Complete all 4 assessments to unlock your tailored career matches and detailed AI mentor advice.</p>
           <button class="btn btn-p btn-sm" onclick="G('assessment-hub')">Go to Assessments</button>
@@ -1484,14 +1492,12 @@ function renderResultsPage(){
 
   const profilePanel = hasSummary ? `
     <div class="card" style="margin-bottom:14px;padding:14px 16px;background:var(--sf2);border:1px solid var(--br);border-radius:var(--r);">
-      <div style="font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">📊 Your Academic Profile</div>
+      <div style="font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Your Academic Profile</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <div style="font-size:12px;"><span style="color:var(--tx3);">Department</span><br><strong>${profileSummary.department || '—'}</strong></div>
         <div style="font-size:12px;"><span style="color:var(--tx3);">Academic Strength</span><br><strong>${profileSummary.academic_strength || '—'}</strong></div>
-        <div style="font-size:12px;"><span style="color:var(--tx3);">CGPA</span><br><strong>${profileSummary.cgpa != null ? profileSummary.cgpa.toFixed(2) + ' / 5.0' : '—'}</strong></div>
-        <div style="font-size:12px;"><span style="color:var(--tx3);">WAEC Credits</span><br><strong>${profileSummary.waec_credits != null ? profileSummary.waec_credits + ' subjects' : '—'}</strong></div>
+        <div style="font-size:12px;"><span style="color:var(--tx3);">Subjects Credits</span><br><strong>${profileSummary.waec_credits != null ? profileSummary.waec_credits + ' subjects' : '—'}</strong></div>
         <div style="font-size:12px;"><span style="color:var(--tx3);">Best Subject Group</span><br><strong>${profileSummary.best_subject_category || '—'}</strong></div>
-        <div style="font-size:12px;"><span style="color:var(--tx3);">Course Alignment</span><br><strong style="color:${profileSummary.course_alignment === 1 ? 'var(--gr)' : 'var(--a2)'}">${profileSummary.course_alignment === 1 ? '✓ Excellent' : '⚠ Review'}</strong></div>
       </div>
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--br);display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         <div style="font-size:11px;color:var(--tx3);">Aptitude: <strong style="color:var(--pl);">${aptScore}/10</strong></div>
@@ -1539,7 +1545,7 @@ function renderResultsPage(){
       ${profilePanel}
 
       <div class="card card-g" style="margin-top: 14px; padding: 16px;">
-        <div style="font-size:11px;color:var(--pl);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">💡 Detailed Mentor Advice</div>
+        <div style="font-size:11px;color:var(--pl);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Detailed Mentor Advice</div>
         <div id="aiSummaryReport" style="font-size:13px;color:var(--tx2);line-height:1.65; font-family: 'DM Sans', sans-serif;">
           ${gemini.summary ? marked.parse(gemini.summary) : marked.parse(`Your profile strongly aligns with **${primary.career}**. High aptitude and cognitive scores indicate excellent potential in technology-driven fields.`)}
         </div>
@@ -1752,16 +1758,17 @@ function startTest(category) {
   G(pageId);
 }
 
-function beginAssessmentSequence(forceRetake = false) {
+async function beginAssessmentSequence(forceRetake = false) {
   const completedCount = Object.values(APP.testsDone).filter(Boolean).length;
   const hasPastAssessment = APP.history.length > 0 || !!APP.assessmentResults;
 
-  if (forceRetake || (hasPastAssessment && completedCount === 0)) {
+  if (forceRetake || !APP.assessmentSession || (hasPastAssessment && completedCount === 0)) {
     APP.testsDone = {};
     TEST_RUNNER.answers = {};
     APP.assessmentResults = null;
     APP.recommendationPending = false;
     APP.isRetaking = true;
+    await loadAssessmentSession();
   }
 
   if (completedCount === 4 && !forceRetake) {
@@ -1831,7 +1838,7 @@ function renderCurrentQuestion() {
     });
   } else if (category === 'personality') {
     optionsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px;">`;
-    const icons = ["🎯", "🤝", "💡", "📊"];
+    const icons = ["❌", "🤏🏼", "⏳", "♾"];
     q.options.forEach((opt, idx) => {
       const isSel = prevAns === opt;
       const icon = icons[idx % icons.length];
@@ -1935,11 +1942,7 @@ function G(id){
   }
    
   if(id==='assessment-hub'){ 
-    if(!APP.assessmentSession && APP.loggedIn) {
-      loadAssessmentSession().then(() => renderAssessHub());
-    } else {
-      renderAssessHub(); 
-    }
+    loadAssessmentSession().then(() => renderAssessHub()).catch(() => renderAssessHub());
   }
   if(id==='profile-upload'){ renderUploadSlots(); }
   if(id==='view-results'){ renderViewResults(); }

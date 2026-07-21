@@ -612,11 +612,30 @@ questions.extend(science_personality)
 questions.extend(commercial_personality)
 questions.extend(arts_personality)
 
+# Check if existing assessment_questions.json has manual edits to preserve
+if OUTPUT_PATH.exists():
+    try:
+        with open(OUTPUT_PATH, "r", encoding="utf-8") as f_existing:
+            existing_questions = json.load(f_existing)
+            if isinstance(existing_questions, list) and len(existing_questions) > 0:
+                # Merge existing manual edits keyed by question ID
+                existing_map = {q.get("id"): q for q in existing_questions if isinstance(q, dict) and "id" in q}
+                merged_questions = []
+                for q in questions:
+                    q_id = q.get("id")
+                    if q_id in existing_map:
+                        merged_questions.append(existing_map[q_id])
+                    else:
+                        merged_questions.append(q)
+                questions = merged_questions
+    except Exception as err:
+        print(f"Warning: could not read existing {OUTPUT_PATH}: {err}")
+
 # Verify count is exactly 300
 print(f"Total compiled questions: {len(questions)}")
 categories = ["aptitude", "cognitive", "psychometric", "personality"]
 for cat in categories:
-    cat_qs = [q for q in questions if q["category"] == cat]
+    cat_qs = [q for q in questions if q.get("category") == cat]
     print(f"  Category '{cat}' count: {len(cat_qs)}")
     for sub in ["Science", "Commercial", "Arts"]:
         sub_qs = [q for q in cat_qs if q.get("subject_category") == sub]
@@ -627,4 +646,4 @@ OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(questions, f, indent=2, ensure_ascii=False)
 
-print(f"Successfully generated 300 questions in {OUTPUT_PATH}")
+print(f"Successfully processed {len(questions)} questions in {OUTPUT_PATH}")

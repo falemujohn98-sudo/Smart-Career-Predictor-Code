@@ -247,7 +247,7 @@ def generate_local_fallback(xgb_result, test_scores, profile):
     school_type = profile.get("School_Type", "Government School")
     academic_strength = profile.get("Academic_Strength", "Average")
     best_cat = profile.get("Best_Subject_Category", department)
-    cgpa = profile.get("CGPA", 3.0)
+    # cgpa = profile.get("CGPA", 3.0)
     waec_credits = profile.get("WAEC_Credits", 5)
 
     apt = test_scores.get("aptitude_score_10", 5.0)
@@ -369,68 +369,67 @@ def generate_local_fallback(xgb_result, test_scores, profile):
         strengths.append(f"**Perfect Department Alignment** — Your highest-performing subject group ({best_cat}) aligns perfectly with your {department} department, maximising your readiness for {predicted_career}.")
 
     # CGPA commentary
-    if cgpa >= 4.0:
-        strengths.append(f"**Strong Academic Record (CGPA: {cgpa:.2f}/5.0)** — Your grades position you competitively for direct entry into top Nigerian universities for {predicted_career}.")
-    elif cgpa >= 3.0:
-        strengths.append(f"**Solid Academic Foundation (CGPA: {cgpa:.2f}/5.0)** — Your grades meet the requirements for most {predicted_career} programmes. Focus on excelling in your core subjects to strengthen your JAMB and Post-UTME performance.")
-    else:
-        growth_areas.append(f"**Academic Improvement Needed (CGPA: {cgpa:.2f}/5.0)** — Prioritise improving your grades in core subjects. Consider enrolling in after-school tutorials, joining study groups, and practising with WAEC and JAMB past questions daily.")
+    # if cgpa >= 4.0:
+    #     strengths.append(f"**Strong Academic Record (CGPA: {cgpa:.2f}/5.0)** — Your grades position you competitively for direct entry into top Nigerian universities for {predicted_career}.")
+    # elif cgpa >= 3.0:
+    #     strengths.append(f"**Solid Academic Foundation (CGPA: {cgpa:.2f}/5.0)** — Your grades meet the requirements for most {predicted_career} programmes. Focus on excelling in your core subjects to strengthen your JAMB and Post-UTME performance.")
+    # else:
+    #     growth_areas.append(f"**Academic Improvement Needed (CGPA: {cgpa:.2f}/5.0)** — Prioritise improving your grades in core subjects. Consider enrolling in after-school tutorials, joining study groups, and practising with WAEC and JAMB past questions daily.")
 
     strengths_md = "\n".join([f"- {s}" for s in strengths])
     growth_md = "\n".join([f"- {g}" for g in growth_areas]) if growth_areas else ""
     steps_md = "\n".join([f"{i+1}. {step}" for i, step in enumerate(guidance["actionable_steps"])])
 
     # ── Compose the full report ──────────────────────────────────────────────
-    summary = f"""### 🎯 Career Pathway: {predicted_career}
+    summary = f"""### Career Pathway: {predicted_career}
 
 {guidance['description']}
 
 ---
 
-### 📊 Your Profile at a Glance
+### Your Profile at a Glance
 | Metric | Value |
 |---|---|
 | **Department** | {department} |
 | **Academic Strength** | {academic_strength} |
-| **Estimated CGPA** | {cgpa:.2f} / 5.0 |
-| **WAEC Credits (C and above)** | {waec_credits} subjects |
+| **Subject Credits (C and above)** | {waec_credits} subjects |
 | **Best Subject Group** | {best_cat} |
 | **School Type** | {school_type} |
 
 ---
 
-### 💪 Your Key Strengths
+### Your Key Strengths
 {strengths_md}
 """
 
     if growth_md:
         summary += f"""
-### 📈 Areas for Growth
+### Areas for Growth
 {growth_md}
 """
 
     summary += f"""
 ---
 
-### 🚀 Your Personalised Action Plan
+### Your Personalised Action Plan
 {steps_md}
 
 ---
 
-### 🎓 Recommended JAMB Subject Combination
+### Recommended JAMB Subject Combination
 **{career_info['jamb']}**
 
 Choose this combination when registering for JAMB to qualify for {predicted_career} programmes at top universities.
 
-### 🏫 Top Nigerian Universities for {predicted_career}
+### Top Nigerian Universities for {predicted_career}
 {career_info['universities']}
 
-### 💰 Scholarships to Explore
+### Scholarships to Explore
 {career_info['scholarships']}
 
 ---
 
-> **💡 Remember:** Your career journey is unique to you. These recommendations are based on your academic profile, test performance, and personality traits. Stay consistent with your studies, seek mentorship from professionals in your chosen field, and never stop learning.
+> **Remember:** Your career journey is unique to you. These recommendations are based on your academic profile, test performance, and personality traits. Stay consistent with your studies, seek mentorship from professionals in your chosen field, and never stop learning.
 
 *— Smart Career Predictor, powered by AI and academic data analysis*"""
 
@@ -482,9 +481,7 @@ def gemini_final_prediction(xgb_result, test_scores, profile):
 - Department: {dept}
 - Academic Strength: {profile.get('Academic_Strength', 'Average')}
 - Best Subject Category: {profile.get('Best_Subject_Category', dept)}
-- Estimated CGPA: {profile.get('CGPA', 3.0):.2f} / 5.0
-- WAEC Credits (C & above): {profile.get('WAEC_Credits', 5)} subjects
-- Course Alignment: {'Excellent (Department matches strongest subject group)' if profile.get('Course_Alignment', 0) == 1 else 'Some mismatch (consider reviewing elective choices)'}
+- Subject Credits (C & above): {profile.get('WAEC_Credits', 5)} subjects
 
 === SUBJECT GRADES ===
 {grades_str}
@@ -508,7 +505,7 @@ Write a detailed, personalised career recommendation report using exactly this s
 [2-3 sentences: Describe this career path in a Nigerian context. Mention specific industries or sectors.]
 
 ### \U0001f4ca Your Profile at a Glance
-[Summarise the student's department, academic strength, CGPA, and top grades in bullet points.]
+[Summarise the student's department, academic strength, and top grades in bullet points.]
 
 ### \U0001f4aa Key Strengths Detected
 [4-6 bullet points referencing SPECIFIC grades and test scores.]

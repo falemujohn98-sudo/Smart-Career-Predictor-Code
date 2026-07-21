@@ -145,11 +145,16 @@ def build_assessment_session(student_id: str) -> Dict[str, Any]:
     for config in TEST_CONFIG:
         category_questions = [
             q for q in questions 
-            if q.get("category") == config["category"] and 
-            (q.get("subject_category") == subj_cat or q.get("subject_category", "General") == "General")
+            if str(q.get("category")).lower() == config["category"].lower() and 
+            (str(q.get("subject_category")).lower() == subj_cat.lower() or str(q.get("subject_category", "General")).lower() == "general")
         ]
-        if not category_questions:
-            category_questions = [q for q in questions if q.get("category") == config["category"]]
+        if len(category_questions) < config["question_count"]:
+            # Fill up with other questions from the same category if department specific count is insufficient
+            extra_questions = [
+                q for q in questions
+                if str(q.get("category")).lower() == config["category"].lower() and q not in category_questions
+            ]
+            category_questions.extend(extra_questions)
             
         if category_questions:
             rng.shuffle(category_questions)
