@@ -113,7 +113,56 @@ Stores chronological records of prediction payloads and reports:
 
 ---
 
-## 4. Verification Results
+## 4. Model Evaluation & Performance Metrics
+
+The machine learning models were trained and evaluated in [`backend/ml_models/training/new_model.ipynb`](file:///c:/Users/USER/Documents/GitHub%20uploads/smart-career-code-me/backend/ml_models/training/new_model.ipynb). The pipeline includes preprocessing (scaling numerical features, ordinal encoding categorical features) and model evaluation using 5-Fold Stratified Cross-Validation, train/test split accuracy, precision, recall, and F1-score.
+
+### Overall Model Performance Summary
+
+| Model | Train Accuracy | Test Accuracy | 5-Fold CV Accuracy | Precision (Weighted Avg) | Recall (Weighted Avg) | F1-Score (Weighted Avg) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Random Forest Classifier** | 100.00% | 100.00% | 100.00% ± 0.00% | 1.00 | 1.00 | 1.00 |
+| **XGBoost Classifier (Base)** | 100.00% | 100.00% | N/A | 1.00 | 1.00 | 1.00 |
+| **XGBoost Classifier (Tuned - Production)** | **100.00%** | **100.00%** | **99.50% ± 1.00%** | **1.00** | **1.00** | **1.00** |
+
+*Note: Hyperparameter tuning via `RandomizedSearchCV` achieved a Best Cross-Validation score of **99.38%** with the tuned parameters: `n_estimators=500`, `learning_rate=0.2`, `max_depth=5`, `gamma=0.2`, `subsample=1.0`, `colsample_bytree=0.8`.*
+
+### Detailed Classification Report (Tuned XGBoost Production Model on Test Set)
+
+| Class | Precision | Recall | F1-Score | Support |
+| :---: | :---: | :---: | :---: | :---: |
+| **Agriculture and Environmental Sciences** | 1.00 | 1.00 | 1.00 | 5 |
+| **Business & Finance** | 1.00 | 1.00 | 1.00 | 6 |
+| **Computer Science & IT** | 1.00 | 1.00 | 1.00 | 2 |
+| **Creative Arts & Design** | 1.00 | 1.00 | 1.00 | 3 |
+| **Education & Humanities** | 1.00 | 1.00 | 1.00 | 3 |
+| **Engineering & Technology** | 1.00 | 1.00 | 1.00 | 3 |
+| **Entrepreneurship & Management** | 1.00 | 1.00 | 1.00 | 4 |
+| **Law & Social Sciences** | 1.00 | 1.00 | 1.00 | 6 |
+| **Mass Communication & Media** | 1.00 | 1.00 | 1.00 | 5 |
+| **Medicine & Health Sciences** | 1.00 | 1.00 | 1.00 | 3 |
+| **Accuracy** | | | **1.00 (100.00%)** | **40** |
+| **Macro Average** | **1.00** | **1.00** | **1.00** | **40** |
+| **Weighted Average** | **1.00** | **1.00** | **1.00** | **40** |
+
+### Top Predictive Feature Importances (XGBoost Production Model)
+
+| Rank | Feature Name | Importance Weight |
+| :---: | :--- | :---: |
+| 1 | `aptitude_score_10` | 0.0865 (8.65%) |
+| 2 | `economics` | 0.0762 (7.62%) |
+| 3 | `financial_accounting` | 0.0729 (7.29%) |
+| 4 | `cgpa` | 0.0709 (7.09%) |
+| 5 | `chemistry` | 0.0676 (6.76%) |
+| 6 | `creative_arts` | 0.0608 (6.08%) |
+| 7 | `cognitive_score_10` | 0.0566 (5.66%) |
+| 8 | `marketing` | 0.0541 (5.41%) |
+| 9 | `government` | 0.0529 (5.29%) |
+| 10 | `christian_religious_studies/islamic_studies` | 0.0520 (5.20%) |
+
+---
+
+## 5. Verification Results
 
 A suite of unit and integration tests was written and executed inside the project's virtual environment:
 
@@ -123,9 +172,9 @@ A suite of unit and integration tests was written and executed inside the projec
 ```
 
 ### Results Summary:
-*   **Total Tests**: 5
+*   **Total Tests**: 6
 *   **Status**: `PASSED`
-*   **Duration**: 12.34 seconds
+*   **Duration**: 41.07 seconds
 *   **Covered Sections**:
     1.  `test_prediction_returns_structure`: Verifies XGBoost classifier outputs predicted career, confidence score, and top 3 path listings.
     2.  `test_assessment_session_contains_questions`: Confirms dynamic random question allocation fetches exactly 10 questions per category.
@@ -135,7 +184,7 @@ A suite of unit and integration tests was written and executed inside the projec
 
 ---
 
-## 5. Identified Lapses and Recommended Improvements
+## 6. Identified Lapses and Recommended Improvements
 
 | Area | Lapsed Behavior | Proposed Improvement |
 | :--- | :--- | :--- |
@@ -144,7 +193,7 @@ A suite of unit and integration tests was written and executed inside the projec
 | **Error Handlers** | Frontend fetch calls log to console upon network failure. | Implement visually clean modal cards or retry buttons on the UI to gracefully handle temporary network dropouts. |
 | **Test Platforms** | Automation browser subagents require Linux containers. | Shift to platform-agnostic headless tests (e.g. Playwright with bundled Chromium binaries) for cross-platform validation. |
 
-## 6. Deployment Workflow
+## 7. Deployment Workflow
 
 Because of the decoupled nature of the application, we deploy the **Frontend** and **Backend** separately.
 
@@ -167,7 +216,7 @@ The frontend is a completely static set of files that makes network requests to 
 4. Choose `main` as the branch and `/frontend` as the folder (or `/` if you serve the HTML directly from the root). 
 5. Save. In a few minutes, your frontend will be live at `https://yourusername.github.io/your-repo-name/frontend/smart-career-predictor.html`.
 
-### B. Backend Deployment (Docker & Render/Railway)
+### B. Backend Deployment (Docker & Render)
 
 The backend runs Python, FastAPI, and machine learning pipelines, requiring a dedicated server environment. We use **Docker** to containerize this environment, guaranteeing it behaves identically to your localhost.
 
@@ -198,8 +247,8 @@ Once your backend is live on Render:
 
 ---
 
-## 7. Functionality Assurance (Localhost vs Production)
+## 8. Functionality Assurance (Localhost vs Production)
 
 By utilizing `CORSMiddleware` in the FastAPI backend (`allow_origins=["*"]`) and the dynamic `API_BASE_URL` in the frontend, **the application will function exactly as it did on localhost**. 
 - On `localhost`, the frontend will continue to send requests to `` (relative paths), seamlessly hitting your local Python server.
-- On `GitHub Pages`, it will append the Render URL to all requests, successfully bypassing cross-origin restrictions and delivering identical performance and behavior.
+- On `Vercel`, it will append the Render URL to all requests, successfully bypassing cross-origin restrictions and delivering identical performance and behavior.
