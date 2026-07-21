@@ -22,7 +22,7 @@ graph TD
 ```
 
 ### Core Components
-1. **Frontend Presentation Layer (`frontend/`)**: A responsive, PWA-ready Single Page Application (SPA) built with pure HTML5, CSS3, and JavaScript. It communicates asynchronously with the backend via `fetch` API, enabling deployment on static hosting platforms like GitHub Pages.
+1. **Frontend Presentation Layer (`frontend/`)**: A responsive, PWA-ready Single Page Application (SPA) built with pure HTML5, CSS3, and JavaScript. It communicates asynchronously with the backend via `fetch` API, enabling deployment on static hosting platforms like Vercel.
 2. **API Gateway Layer (`backend/fastapi_integration/main.py`)**: Implements RESTful architecture using FastAPI. It manages CORS headers (allowing cross-origin requests from the decoupled frontend), handles route routing, and defines Pydantic schemas for data validation.
 3. **Core Domain Logic (`assessment_engine.py`)**: Manages the psychometric testing loops, state validation, scoring mechanics, and SQLite database transactions (e.g., storing student profiles, logging assessment scores).
 4. **Inference Layer (`predict.py`)**: Utilizes a serialized `scikit-learn` pipeline and an `XGBoost` classifier to evaluate student scores across multiple domains (Aptitude, Cognitive, Interest) and outputs primary, secondary, and tertiary career probability vectors across 10 defined classes.
@@ -117,6 +117,8 @@ Stores chronological records of prediction payloads and reports:
 
 The machine learning models were trained and evaluated in [`backend/ml_models/training/new_model.ipynb`](file:///c:/Users/USER/Documents/GitHub%20uploads/smart-career-code-me/backend/ml_models/training/new_model.ipynb). The pipeline includes preprocessing (scaling numerical features, ordinal encoding categorical features) and model evaluation using 5-Fold Stratified Cross-Validation, train/test split accuracy, precision, recall, and F1-score.
 
+`Note`: The current dataset is a synthetic dataset. The original dataset meant for the project will be generated using survey (Google Form).
+
 ### Overall Model Performance Summary
 
 | Model | Train Accuracy | Test Accuracy | 5-Fold CV Accuracy | Precision (Weighted Avg) | Recall (Weighted Avg) | F1-Score (Weighted Avg) |
@@ -197,11 +199,11 @@ A suite of unit and integration tests was written and executed inside the projec
 
 Because of the decoupled nature of the application, we deploy the **Frontend** and **Backend** separately.
 
-### A. Frontend Deployment (GitHub Pages)
+### A. Frontend Deployment (Vercel)
 
 The frontend is a completely static set of files that makes network requests to the backend. It has been configured to dynamically resolve the backend URL based on its environment (localhost vs production).
 
-**Steps to Deploy to GitHub Pages:**
+**Steps to Deploy to Vercel:**
 1. Commit all your code and push it to a new public repository on GitHub.
    ```bash
    git init
@@ -211,10 +213,11 @@ The frontend is a completely static set of files that makes network requests to 
    git remote add origin https://github.com/yourusername/your-repo-name.git
    git push -u origin main
    ```
-2. In your GitHub repository, navigate to **Settings** > **Pages**.
-3. Under **Build and deployment**, select **Deploy from a branch**.
-4. Choose `main` as the branch and `/frontend` as the folder (or `/` if you serve the HTML directly from the root). 
-5. Save. In a few minutes, your frontend will be live at `https://yourusername.github.io/your-repo-name/frontend/smart-career-predictor.html`.
+2. Log in to [Vercel](https://vercel.com) and click **Add New** > **Project**.
+3. Import your GitHub repository.
+4. Set the **Framework Preset** to `Other`.
+5. Set the **Root Directory** to `frontend/` (or leave as root if `index.html` is in the root directory).
+6. Click **Deploy**. In a few seconds, your frontend will be live on a Vercel-provisioned domain.
 
 ### B. Backend Deployment (Docker & Render)
 
@@ -243,7 +246,7 @@ Once your backend is live on Render:
    ```javascript
    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://smart-career-backend.onrender.com';
    ```
-4. Commit and push this change to GitHub. GitHub Pages will automatically update, and your live frontend will now communicate securely with your live Docker backend!
+4. Commit and push this change to GitHub. Vercel will automatically trigger a new deployment, and your live frontend will now communicate securely with your live Docker backend!
 
 ---
 
