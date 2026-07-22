@@ -318,6 +318,7 @@ def grade_answers(answers: Dict[str, str]) -> Dict[str, float]:
     psychometric_map = {
         "strongly disagree": 1.0,
         "disagree": 2.0,
+        "neutral": 3.0,
         "agree": 4.0,
         "strongly agree": 5.0
     }
