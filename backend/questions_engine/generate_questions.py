@@ -1,4 +1,4 @@
-import json
+﻿import json
 from pathlib import Path
 
 # Target output path
@@ -338,7 +338,7 @@ for i in range(61, 75):
     })
 
 
-# --- PSYCHOMETRIC INTEREST TESTS (75 questions: 25 Science, 25 Commercial, 25 Arts) ---
+# --- PSYCHOMETRIC TESTS (75 questions: 25 Science, 25 Commercial, 25 Arts) ---
 # We must preserve:
 # psychometric-1 (General / Science)
 # psychometric-2 (General / Commercial)
@@ -349,7 +349,7 @@ science_psychometric = [
         "category": "psychometric",
         "subject_category": "Science",
         "prompt": "I enjoy solving complex mathematical puzzles.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Psychometric RIASEC Inventory"
     },
     {
@@ -357,7 +357,7 @@ science_psychometric = [
         "category": "psychometric",
         "subject_category": "Science",
         "prompt": "I am curious to learn how computer software and applications are built.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Psychometric RIASEC Inventory"
     },
     {
@@ -365,7 +365,7 @@ science_psychometric = [
         "category": "psychometric",
         "subject_category": "Science",
         "prompt": "I would like to conduct experiments in a chemistry or physics laboratory.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Psychometric RIASEC Inventory"
     },
     {
@@ -373,7 +373,7 @@ science_psychometric = [
         "category": "psychometric",
         "subject_category": "Science",
         "prompt": "I like studying human anatomy, plant biology, or veterinary sciences.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Psychometric RIASEC Inventory"
     }
 ]
@@ -384,7 +384,7 @@ for i in range(6, 27):
         "category": "psychometric",
         "subject_category": "Science",
         "prompt": f"I am interested in scientific research regarding renewable energy source {i}.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Science Psychometric Bank"
     })
 
@@ -394,7 +394,7 @@ commercial_psychometric = [
         "category": "psychometric",
         "subject_category": "Commercial",
         "prompt": "I prefer working in teams rather than alone.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Psychometric RIASEC Inventory"
     }
 ]
@@ -416,7 +416,7 @@ for idx, prompt in enumerate(commercial_psy_prompts):
         "category": "psychometric",
         "subject_category": "Commercial",
         "prompt": prompt,
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Commercial Psychometric Bank"
     })
 
@@ -426,7 +426,7 @@ for i in range(35, 51):
         "category": "psychometric",
         "subject_category": "Commercial",
         "prompt": f"I would feel motivated to optimize supply chains and logistics in business project {i}.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Commercial Psychometric Bank"
     })
 
@@ -450,7 +450,7 @@ for idx, prompt in enumerate(arts_psy_prompts):
         "category": "psychometric",
         "subject_category": "Arts",
         "prompt": prompt,
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Arts Psychometric Bank"
     })
 
@@ -460,7 +460,7 @@ for i in range(61, 76):
         "category": "psychometric",
         "subject_category": "Arts",
         "prompt": f"I would like to work as an advisor on cultural heritage preservation project {i}.",
-        "options": ["Strongly disagree", "Disagree", "Agree", "Strongly agree"],
+        "options": ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
         "source": "Arts Psychometric Bank"
     })
 
@@ -647,3 +647,4 @@ with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(questions, f, indent=2, ensure_ascii=False)
 
 print(f"Successfully processed {len(questions)} questions in {OUTPUT_PATH}")
+
