@@ -25,7 +25,7 @@ from backend.questions_engine.assessment_engine import (
     grade_answers,
     save_assessment
 )
-from backend.gemini_llm.gemini_refine import gemini_final_prediction
+from backend.gemini_llm.gemini_refine import align_prediction_with_department, gemini_final_prediction
 from backend.ml_models.tests.predict import predict_career   # Fixed import
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -312,6 +312,7 @@ def submit_assessment(data: SubmissionRequest):
         profile[sub] = subject_grades.get(sub, "UNKNOWN")
 
     xgb_result = predict_career(profile)
+    xgb_result = align_prediction_with_department(xgb_result, profile)
     gemini_result = gemini_final_prediction(xgb_result, scores, profile)
 
     result = {
