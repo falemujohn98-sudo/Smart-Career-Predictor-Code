@@ -174,15 +174,21 @@ python -m pytest backend/ml_models/tests/test_backend.py -v --tb=short
 ```
 
 ### Results Summary:
-*   **Total Tests**: 6
+*   **Total Tests**: 11
 *   **Status**: `PASSED`
-*   **Duration**: 41.07 seconds
+*   **Duration**: 21.39 seconds
 *   **Covered Sections**:
     1.  `test_prediction_returns_structure`: Verifies XGBoost classifier outputs predicted career, confidence score, and top 3 path listings.
-    2.  `test_assessment_session_contains_questions`: Confirms dynamic random question allocation fetches exactly 10 questions per category.
-    3.  `test_grading_logic`: Validates mathematical grading bounds (Aptitude/Cognitive scored 0-10, Psychometric/Personality scaled 1-5).
-    4.  `test_signup_login_flow`: Tests secure endpoints, credential validation, and duplicate signup errors.
-    5.  `test_profile_update_and_submit`: Tests end-to-end integration mapping frontend JSON profiles directly into SQLite writes and grading predictions.
+    2.  `test_department_alignment_blocks_cross_department_primary`: Verifies the department-to-career mapping prevents cross-department primary recommendations, such as returning `Entrepreneurship & Management` for a Science student.
+    3.  `test_mentor_heading_is_forced_to_primary_career`: Ensures the visible `Career Pathway` heading in mentor advice is rewritten to match the primary recommendation if generated advice drifts.
+    4.  `test_assessment_session_contains_questions`: Confirms dynamic random question allocation fetches exactly 10 questions per category.
+    5.  `test_assessment_sessions_shuffle_questions_and_mcq_options`: Verifies each assessment session can receive a different question order and shuffled aptitude/cognitive options.
+    6.  `test_assessment_questions_are_department_tailored`: Confirms department-specific sessions only include questions for the student's department plus approved general fallback questions.
+    7.  `test_grading_logic`: Validates mathematical grading bounds (Aptitude/Cognitive scored 0-10, Psychometric/Personality scaled 1-5).
+    8.  `test_signup_login_flow`: Tests secure endpoints, credential validation, and duplicate signup errors.
+    9.  `test_profile_update_and_submit`: Tests end-to-end integration mapping frontend JSON profiles directly into SQLite writes and grading predictions.
+    10. `test_science_submission_prediction_matches_mentor_advice`: Runs a Science-student submission and verifies the primary recommendation, top recommendation card, and mentor advice all resolve to `Medicine & Health Sciences`.
+    11. `test_excel_upload_parsing`: Validates Excel result upload parsing and score-to-grade conversion for downstream model features.
 
 ---
 
