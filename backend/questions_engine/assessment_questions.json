@@ -31,15 +31,15 @@
     "id": "aptitude-3",
     "category": "aptitude",
     "subject_category": "Science",
-    "prompt": "A logistics drone leaves a hub in Akure and flies 8 km due North, then turns and flies 6 km due East to deliver a package. What is the straight-line distance (displacement) of the drone from the hub?",
+    "prompt": "Find the next number: 2, 4, 8, 16, __",
     "options": [
-      "14 km",
-      "10 km",
-      "48 km",
-      "2 km"
+      "24",
+      "32",
+      "48",
+      "64"
     ],
-    "answer": "10 km",
-    "source": "Gemini-AI"
+    "answer": "32",
+    "source": "International aptitude-style reasoning samples"
   },
   {
     "id": "aptitude-4",
@@ -59,15 +59,15 @@
     "id": "aptitude-5",
     "category": "aptitude",
     "subject_category": "Science",
-    "prompt": "In a science exhibition, a student notices a bacterial population doubles every 20 minutes. If there are 100 bacteria initially, how many bacteria will be present after 2 hours?",
+    "prompt": "Which number is missing: 5, 10, 20, 40, __",
     "options": [
-      "600",
-      "1,200",
-      "6,400",
-      "3,200"
+      "50",
+      "60",
+      "80",
+      "100"
     ],
-    "answer": "6,400",
-    "source": "Gemini-AI"
+    "answer": "80",
+    "source": "International aptitude-style reasoning samples"
   },
   {
     "id": "aptitude-6",
@@ -185,15 +185,15 @@
     "id": "aptitude-14",
     "category": "aptitude",
     "subject_category": "Science",
-    "prompt": "A metallic alloy used in a physics experiment consists of Copper and Zinc in the ratio 5:3. If the total weight of the alloy is 240g, how much Zinc must be added to make the ratio 5:4?",
+    "prompt": "Find the next number in the sequence: 1, 4, 9, 16, __",
     "options": [
-      "30g",
-      "40g",
-      "60g",
-      "80g"
+      "25",
+      "20",
+      "24",
+      "36"
     ],
-    "answer": "30g",
-    "source": "Gemini-AI"
+    "answer": "25",
+    "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
     "id": "aptitude-15",
@@ -1050,6 +1050,20 @@
     "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
+    "id": "cognitive-1",
+    "category": "cognitive",
+    "subject_category": "Science",
+    "prompt": "What comes next: 1, 3, 6, 10, __",
+    "options": [
+      "12",
+      "14",
+      "15",
+      "16"
+    ],
+    "answer": "15",
+    "source": "International cognitive assessment patterns"
+  },
+  {
     "id": "cognitive-2",
     "category": "cognitive",
     "subject_category": "Science",
@@ -1109,29 +1123,15 @@
     "id": "cognitive-6",
     "category": "cognitive",
     "subject_category": "Science",
-    "prompt": "Five chemical elements (P, Q, R, S, T) are being tested for reactivity. P is more reactive than Q. R is less reactive than S. T is more reactive than Q but less reactive than R. Which element is the least reactive?",
+    "prompt": "What comes next in the sequence: 2, 6, 12, 20, __",
     "options": [
-      "P",
-      "Q",
-      "R",
-      "S"
+      "30",
+      "28",
+      "24",
+      "26"
     ],
-    "answer": "Q",
-    "source": "Gemini-AI"
-  },
-  {
-    "id": "cognitive-6",
-    "category": "cognitive",
-    "subject_category": "Science",
-    "prompt": "Five chemical elements (P, Q, R, S, T) are being tested for reactivity. P is more reactive than Q. R is less reactive than S. T is more reactive than Q but less reactive than R. Which element is the least reactive?",
-    "options": [
-      "P",
-      "Q",
-      "R",
-      "S"
-    ],
-    "answer": "Q",
-    "source": "Gemini-AI"
+    "answer": "30",
+    "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
     "id": "cognitive-7",
@@ -1750,20 +1750,6 @@
     "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
-    "id": "cognitive-1",
-    "category": "cognitive",
-    "subject_category": "Science",
-    "prompt": "An experiment tracking a bacterial colony shows the population growing at a specific rate every hour: 2, 6, 14, 30, 62,... What will the population be at the next hour?",
-    "options": [
-      "92",
-      "124",
-      "126",
-      "130"
-    ],
-    "answer": "126",
-    "source": "Gemini-AI"
-  },
-  {
     "id": "cognitive-51",
     "category": "cognitive",
     "subject_category": "Arts",
@@ -2100,6 +2086,20 @@
     "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
+    "id": "cognitive-75",
+    "category": "cognitive",
+    "subject_category": "Arts",
+    "prompt": "Which term describes a story told from the 'I' perspective?",
+    "options": [
+      "First-person narrative",
+      "Third-person narrative",
+      "Omniscient narrative",
+      "Second-person narrative"
+    ],
+    "answer": "First-person narrative",
+    "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
+  },
+  {
     "id": "psychometric-1",
     "category": "psychometric",
     "subject_category": "Science",
@@ -2107,342 +2107,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-3",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would like to conduct experiments in a chemistry or physics laboratory.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-4",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I like studying human anatomy, plant biology, or veterinary sciences.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-5",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would enjoy a career as a medical doctor or surgeon.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-6",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am interested in studying engineering, mechanical or electrical.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-7",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would like to work as a software developer or systems analyst.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-8",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am drawn to careers in pharmacy or drug research.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-9",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would enjoy working as an environmental scientist or ecologist.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-10",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am interested in astronomy or space science research.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-11",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would like to work as a data scientist or statistician.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-12",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I enjoy the idea of a career in biomedical or genetic research.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-13",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would find satisfaction in a career as an architect or civil engineer.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-14",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am interested in agricultural science or food technology.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-15",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would enjoy working as a laboratory technologist.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-16",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am drawn to careers in artificial intelligence or robotics.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-17",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would like to explore a career in geology or mineral sciences.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-18",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am interested in nursing or public health practice.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-19",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would enjoy designing and building electronic devices.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-20",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am interested in marine biology or aquatic sciences.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-21",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would like to work in renewable energy or sustainability engineering.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-22",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I enjoy the idea of researching cures for diseases.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-23",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am drawn to careers involving statistical modelling and forecasting.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-24",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I would find satisfaction working as a veterinary doctor.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-25",
-    "category": "psychometric",
-    "subject_category": "Science",
-    "prompt": "I am interested in studying meteorology or climate science.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
-      "Agree",
-      "Strongly agree"
-    ],
-    "answer": "",
-    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
-  },
-  {
-    "id": "psychometric-26",
-    "category": "psychometric",
-    "subject_category": "Commercial",
-    "prompt": "I prefer working in teams rather than alone.",
-    "options": [
-      "Strongly disagree",
-      "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2457,6 +2122,352 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-3",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would like to conduct experiments in a chemistry or physics laboratory.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-4",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I like studying human anatomy, plant biology, or veterinary sciences.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-5",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would enjoy a career as a medical doctor or surgeon.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-6",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am interested in studying engineering, mechanical or electrical.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-7",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would like to work as a software developer or systems analyst.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-8",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am drawn to careers in pharmacy or drug research.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-9",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would enjoy working as an environmental scientist or ecologist.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-10",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am interested in astronomy or space science research.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-11",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would like to work as a data scientist or statistician.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-12",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I enjoy the idea of a career in biomedical or genetic research.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-13",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would find satisfaction in a career as an architect or civil engineer.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-14",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am interested in agricultural science or food technology.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-15",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would enjoy working as a laboratory technologist.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-16",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am drawn to careers in artificial intelligence or robotics.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-17",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would like to explore a career in geology or mineral sciences.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-18",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am interested in nursing or public health practice.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-19",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would enjoy designing and building electronic devices.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-20",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am interested in marine biology or aquatic sciences.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-21",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would like to work in renewable energy or sustainability engineering.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-22",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I enjoy the idea of researching cures for diseases.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-23",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am drawn to careers involving statistical modelling and forecasting.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-24",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I would find satisfaction working as a veterinary doctor.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-25",
+    "category": "psychometric",
+    "subject_category": "Science",
+    "prompt": "I am interested in studying meteorology or climate science.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2471,6 +2482,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2485,6 +2497,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2499,6 +2512,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2513,6 +2527,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2527,6 +2542,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2541,6 +2557,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2555,6 +2572,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2569,6 +2587,22 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree"
+    ],
+    "answer": "",
+    "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "psychometric-34",
+    "category": "psychometric",
+    "subject_category": "Commercial",
+    "prompt": "I like reading business columns or stock market news.",
+    "options": [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2583,6 +2617,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2597,6 +2632,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2611,6 +2647,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2625,6 +2662,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2639,6 +2677,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2653,6 +2692,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2667,6 +2707,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2681,6 +2722,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2695,6 +2737,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2709,6 +2752,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2723,6 +2767,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2737,6 +2782,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2751,6 +2797,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2765,6 +2812,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2779,6 +2827,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2793,6 +2842,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2807,6 +2857,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2821,6 +2872,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2835,6 +2887,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2849,6 +2902,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2863,6 +2917,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2877,6 +2932,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2891,6 +2947,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2905,6 +2962,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2919,6 +2977,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2933,6 +2992,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2947,6 +3007,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2961,6 +3022,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2975,6 +3037,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -2989,6 +3052,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3003,6 +3067,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3017,6 +3082,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3031,6 +3097,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3045,6 +3112,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3059,6 +3127,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3073,6 +3142,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3087,6 +3157,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3101,6 +3172,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3115,6 +3187,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3129,6 +3202,7 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
@@ -3143,11 +3217,40 @@
     "options": [
       "Strongly disagree",
       "Disagree",
+      "Neutral",
       "Agree",
       "Strongly agree"
     ],
     "answer": "",
     "source": "Holland's RIASEC Career-Interest Psychometric Inventory (validated for Nigerian secondary school students)"
+  },
+  {
+    "id": "personality-1",
+    "category": "personality",
+    "subject_category": "Science",
+    "prompt": "I prefer to work in a quiet, organized space.",
+    "options": [
+      "Never",
+      "Sometimes",
+      "Often",
+      "Always"
+    ],
+    "answer": "",
+    "source": "Big Five Personality Scale"
+  },
+  {
+    "id": "personality-2",
+    "category": "personality",
+    "subject_category": "Science",
+    "prompt": "I approach hard problems logically rather than emotionally.",
+    "options": [
+      "Never",
+      "Sometimes",
+      "Often",
+      "Always"
+    ],
+    "answer": "",
+    "source": "Science Personality Bank"
   },
   {
     "id": "personality-3",
@@ -3164,10 +3267,10 @@
     "source": "Science Personality Bank"
   },
   {
-    "id": "personality-26",
+    "id": "personality-4",
     "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I feel comfortable leading group projects.",
+    "subject_category": "Science",
+    "prompt": "I am curious about the scientific mechanism behind how things work.",
     "options": [
       "Never",
       "Sometimes",
@@ -3175,13 +3278,13 @@
       "Always"
     ],
     "answer": "",
-    "source": "Big Five Personality Scale"
+    "source": "Science Personality Bank"
   },
   {
-    "id": "personality-27",
+    "id": "personality-5",
     "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I set clear goals and targets for my academic studies.",
+    "subject_category": "Science",
+    "prompt": "I prefer to analyze facts before drawing any major conclusions.",
     "options": [
       "Never",
       "Sometimes",
@@ -3189,13 +3292,13 @@
       "Always"
     ],
     "answer": "",
-    "source": "Commercial Personality Bank"
+    "source": "Science Personality Bank"
   },
   {
-    "id": "personality-28",
+    "id": "personality-6",
     "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I feel comfortable taking calculated risks when exploring projects.",
+    "subject_category": "Science",
+    "prompt": "I can focus on code debugging or data analysis for several hours.",
     "options": [
       "Never",
       "Sometimes",
@@ -3203,13 +3306,13 @@
       "Always"
     ],
     "answer": "",
-    "source": "Commercial Personality Bank"
+    "source": "Science Personality Bank"
   },
   {
-    "id": "personality-29",
+    "id": "personality-7",
     "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I try to negotiate and build consensus during group conflicts.",
+    "subject_category": "Science",
+    "prompt": "I enjoy building physical or digital models to test my hypotheses.",
     "options": [
       "Never",
       "Sometimes",
@@ -3217,13 +3320,13 @@
       "Always"
     ],
     "answer": "",
-    "source": "Commercial Personality Bank"
+    "source": "Science Personality Bank"
   },
   {
-    "id": "personality-30",
+    "id": "personality-8",
     "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I am comfortable speaking in public to sell an idea.",
+    "subject_category": "Science",
+    "prompt": "I double-check calculations and lab procedures for safety.",
     "options": [
       "Never",
       "Sometimes",
@@ -3231,35 +3334,7 @@
       "Always"
     ],
     "answer": "",
-    "source": "Commercial Personality Bank"
-  },
-  {
-    "id": "personality-31",
-    "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I stay calm and focused under financial or deadline pressures.",
-    "options": [
-      "Never",
-      "Sometimes",
-      "Often",
-      "Always"
-    ],
-    "answer": "",
-    "source": "Commercial Personality Bank"
-  },
-  {
-    "id": "personality-32",
-    "category": "personality",
-    "subject_category": "Commercial",
-    "prompt": "I enjoy leading teams and organizing school club activities.",
-    "options": [
-      "Never",
-      "Sometimes",
-      "Often",
-      "Always"
-    ],
-    "answer": "",
-    "source": "Commercial Personality Bank"
+    "source": "Science Personality Bank"
   },
   {
     "id": "personality-9",
@@ -3500,10 +3575,10 @@
     "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
-    "id": "personality-1",
+    "id": "personality-26",
     "category": "personality",
-    "subject_category": "Science",
-    "prompt": "I prefer to work in a quiet, organized space.",
+    "subject_category": "Commercial",
+    "prompt": "I feel comfortable leading group projects.",
     "options": [
       "Never",
       "Sometimes",
@@ -3610,6 +3685,20 @@
     ],
     "answer": "",
     "source": "Commercial Personality Bank"
+  },
+  {
+    "id": "personality-34",
+    "category": "personality",
+    "subject_category": "Commercial",
+    "prompt": "I enjoy spotting opportunities to make or save money.",
+    "options": [
+      "Never",
+      "Sometimes",
+      "Often",
+      "Always"
+    ],
+    "answer": "",
+    "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
     "id": "personality-35",
@@ -3850,20 +3939,6 @@
     "source": "Big Five Personality Scale"
   },
   {
-    "id": "personality-2",
-    "category": "personality",
-    "subject_category": "Science",
-    "prompt": "I approach hard problems logically rather than emotionally.",
-    "options": [
-      "Never",
-      "Sometimes",
-      "Often",
-      "Always"
-    ],
-    "answer": "",
-    "source": "Science Personality Bank"
-  },
-  {
     "id": "personality-52",
     "category": "personality",
     "subject_category": "Arts",
@@ -3960,6 +4035,20 @@
     ],
     "answer": "",
     "source": "Arts Personality Bank"
+  },
+  {
+    "id": "personality-59",
+    "category": "personality",
+    "subject_category": "Arts",
+    "prompt": "I enjoy discussing the meaning behind poems, novels, or films.",
+    "options": [
+      "Never",
+      "Sometimes",
+      "Often",
+      "Always"
+    ],
+    "answer": "",
+    "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
   },
   {
     "id": "personality-60",
@@ -4184,18 +4273,5 @@
     ],
     "answer": "",
     "source": "Curated Nigerian Secondary School Question Bank (WAEC/JAMB-aligned)"
-  },
-  {
-    "id": "personality-76",
-    "category": "personality",
-    "subject_category": "Arts",
-    "prompt": "I enjoy expressing my worldview in literature assignment 76.",
-    "options": [
-      "Never",
-      "Sometimes",
-      "Often",
-      "Always"
-    ],
-    "source": "Arts Personality Bank"
   }
 ]
