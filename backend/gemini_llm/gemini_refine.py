@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import re
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -160,6 +161,34 @@ DEPT_CAREER_MAP = {
 # Minimum subject scores that trigger specialist override
 GRADE_NUM = {"A": 8, "B": 6, "C": 5, "D": 3, "E": 2, "F": 1, "UNKNOWN": 5}
 
+DEPARTMENT_CAREER_OPTIONS = {
+    "Science": [
+        "Medicine & Health Sciences",
+        "Engineering & Technology",
+        "Computer Science & IT",
+        "Agriculture & Environmental Sciences",
+    ],
+    "Arts": [
+        "Law & Social Sciences",
+        "Mass Communication & Media",
+        "Creative Arts & Design",
+        "Education & Humanities",
+    ],
+    "Commercial": [
+        "Business & Finance",
+        "Entrepreneurship & Management",
+    ],
+}
+
+
+def _normalise_department(value):
+    """Return one of the known department labels."""
+    raw = str(value or "Science").strip().lower()
+    for dept in DEPARTMENT_CAREER_OPTIONS:
+        if raw == dept.lower():
+            return dept
+    return "Science"
+
 
 def _get_subject_num(profile, sub):
     """Return numeric grade value for a subject in the profile."""
@@ -172,7 +201,7 @@ def _override_career_by_department(profile):
     Department + subject-grade-aware career override.
     Returns the most appropriate career string, or None to keep the ML result.
     """
-    dept = profile.get("Department", "Science")
+    dept = _normalise_department(profile.get("Department", "Science"))
     
     if dept == "Science":
         bio = _get_subject_num(profile, "Biology")
@@ -229,15 +258,88 @@ def _override_career_by_department(profile):
     return None
 
 
-def generate_local_fallback(xgb_result, test_scores, profile):
-    predicted_career = xgb_result.get("predicted_career", "Computer Science & IT")
-    confidence = xgb_result.get("confidence_percent", 0.0)
+def align_prediction_with_department(xgb_result, profile):
+    """
+    Make the ML result department-consistent before the frontend or mentor advice sees it.
 
-    # When ML confidence is below 50%, use our deterministic department + subject override
-    if confidence < 50.0 or predicted_career.startswith("None"):
-        override = _override_career_by_department(profile)
-        if override:
-            predicted_career = override
+    The trained model can occasionally return a confident cross-department class. This
+    guard keeps recommendations useful for Nigerian SSS department tracks while still
+    preserving model confidences for any department-valid options it found.
+    """
+    aligned = dict(xgb_result or {})
+    dept = _normalise_department(profile.get("Department", "Science"))
+    allowed = DEPARTMENT_CAREER_OPTIONS[dept]
+    predicted = aligned.get("predicted_career") or allowed[0]
+    confidence = float(aligned.get("confidence_percent") or 0.0)
+
+    specialist = _override_career_by_department(profile) or allowed[0]
+    must_override = (
+        predicted not in allowed
+        or str(predicted).startswith("None")
+        or confidence < 50.0
+    )
+    effective = specialist if must_override else predicted
+
+    original_top = aligned.get("top_3") or []
+    by_career = {}
+    for item in original_top:
+        career = item.get("career")
+        if career in allowed:
+            by_career[career] = float(item.get("confidence_percent") or 0.0)
+
+    if effective not in allowed:
+        effective = allowed[0]
+
+    if effective not in by_career:
+        by_career[effective] = max(confidence, 70.0 if must_override else confidence)
+
+    # Fill department-relevant alternatives so the UI never displays a
+    # cross-department primary, secondary, or broader option.
+    floor_scores = [68.0, 61.0, 54.0, 48.0]
+    for index, career in enumerate(allowed):
+        by_career.setdefault(career, floor_scores[min(index, len(floor_scores) - 1)])
+
+    ordered = [effective] + [
+        career for career, _ in sorted(
+            by_career.items(), key=lambda item: item[1], reverse=True
+        )
+        if career != effective
+    ]
+
+    aligned["predicted_career"] = effective
+    aligned["confidence_percent"] = round(float(by_career.get(effective, confidence)), 1)
+    aligned["top_3"] = [
+        {
+            "career": career,
+            "confidence_percent": round(float(by_career[career]), 1),
+        }
+        for career in ordered[:3]
+    ]
+    aligned["department"] = dept
+    aligned["department_career_options"] = allowed
+    if must_override:
+        aligned["override_applied"] = True
+        aligned["original_predicted_career"] = predicted
+
+    return aligned
+
+
+def _ensure_summary_career_alignment(summary, career):
+    """Keep the visible mentor advice heading aligned with the primary career."""
+    heading = f"### Career Pathway: {career}"
+    text = str(summary or "").strip()
+    if not text:
+        return heading
+
+    pattern = r"(?im)^###\s+Career Pathway\s*:\s*.+$"
+    if re.search(pattern, text):
+        return re.sub(pattern, heading, text, count=1)
+    return f"{heading}\n\n{text}"
+
+
+def generate_local_fallback(xgb_result, test_scores, profile):
+    xgb_result = align_prediction_with_department(xgb_result, profile)
+    predicted_career = xgb_result.get("predicted_career", "Computer Science & IT")
 
     # Fallback to default if predicted_career is not in the guidance dict
     guidance = LOCAL_CAREER_GUIDANCE.get(predicted_career, LOCAL_CAREER_GUIDANCE["Computer Science & IT"])
@@ -439,25 +541,16 @@ Choose this combination when registering for JAMB to qualify for {predicted_care
 
 
 def gemini_final_prediction(xgb_result, test_scores, profile):
-    # Resolve the best career — apply department override if ML confidence is low
-    predicted_career = xgb_result.get("predicted_career", "Computer Science & IT")
+    xgb_result = align_prediction_with_department(xgb_result, profile)
     confidence = xgb_result.get("confidence_percent", 0.0)
-    effective_career = predicted_career
-
-    if confidence < 50.0 or predicted_career.startswith("None"):
-        override = _override_career_by_department(profile)
-        if override:
-            effective_career = override
-            xgb_result = dict(xgb_result)
-            xgb_result["predicted_career"] = effective_career
-            xgb_result["override_applied"] = True
+    effective_career = xgb_result.get("predicted_career", "Computer Science & IT")
 
     # Try calling Google Generative AI first
     if GEMINI_API_KEY and genai is not None:
         dept = profile.get("Department", "Science")
         DEPT_RELEVANT = {
-            "Science": ["Mathematics", "English", "Physics", "Chemistry", "Biology",
-                        "Further_Mathematics", "Agricultural_Science", "Computer_Studies"],
+            "Science": ["Mathematics", "English", "Physics", "Chemistry", "Biology", "Geography",
+                        "Further_Mathematics", "Agricultural_Science", "Computer_Studies", "Technical_Drawing"],
             "Arts": ["Mathematics", "English", "Literature_In_English", "Government",
                      "History", "Creative_Arts"],
             "Commercial": ["Mathematics", "English", "Economics", "Financial_Accounting",
@@ -530,7 +623,10 @@ IMPORTANT: Be warm, encouraging, and specific. Address the student as "you". Ref
                     break
                 text = getattr(response, "text", "") or ""
                 if text.strip():
-                    return {"summary": text.strip(), "fallback_prediction": xgb_result}
+                    return {
+                        "summary": _ensure_summary_career_alignment(text, effective_career),
+                        "fallback_prediction": xgb_result,
+                    }
             except Exception as exc:
                 logger.warning("Gemini model %s failed: %s", model_name, exc)
 
@@ -545,4 +641,5 @@ IMPORTANT: Be warm, encouraging, and specific. Address the student as "you". Ref
 
 def recommend_with_gemini(student_profile, test_scores, student_id=None):
     xgb_result = predict_career(student_profile)
+    xgb_result = align_prediction_with_department(xgb_result, student_profile)
     return gemini_final_prediction(xgb_result, test_scores, student_profile)
