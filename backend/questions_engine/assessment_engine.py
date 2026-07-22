@@ -1,10 +1,11 @@
 import json
 import os
+import secrets
 import sqlite3
 import sys
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from random import Random
 
 # Ensure project root (ml/) is on sys.path for cross-package imports
@@ -127,37 +128,66 @@ def get_student_attempt_count(student_id: str) -> int:
     return row["count"] if row else 0
 
 
-def build_assessment_session(student_id: str) -> Dict[str, Any]:
+def _normalise_subject_category(value: Any) -> str:
+    raw = str(value or "General").strip().lower()
+    if "art" in raw:
+        return "Arts"
+    if "commercial" in raw or "business" in raw:
+        return "Commercial"
+    if "science" in raw:
+        return "Science"
+    return "General"
+
+
+def _shuffle_options_for_question(question: Dict[str, Any], rng: Random) -> List[str]:
+    options = list(question.get("options", []))
+    if str(question.get("category", "")).lower() in {"aptitude", "cognitive"}:
+        rng.shuffle(options)
+    return options
+
+
+def build_assessment_session(student_id: str, shuffle_seed: Optional[str] = None) -> Dict[str, Any]:
     student_row = db_get_student(student_id)
     if not student_row:
         dept = "Science"
     else:
         dept = student_row.get("department", "Science") or "Science"
     
-    subj_cat = "Arts" if "arts" in str(dept).lower() else "Commercial" if "commercial" in str(dept).lower() else "Science"
+    subj_cat = _normalise_subject_category(dept)
 
     questions = _load_question_bank()
     attempt_count = get_student_attempt_count(student_id)
-    # Seed RNG with student_id and attempt count so retakes get fresh questions
-    rng = Random(f"{student_id}-{attempt_count}")
+    # Use a fresh session salt so each login/session receives a new arrangement.
+    # Tests may pass shuffle_seed for deterministic assertions.
+    session_seed = shuffle_seed or secrets.token_urlsafe(16)
+    rng = Random(f"{student_id}-{attempt_count}-{session_seed}")
     
     tests = []
     for config in TEST_CONFIG:
-        category_questions = [
+        department_questions = [
             q for q in questions 
             if str(q.get("category")).lower() == config["category"].lower() and 
-            (str(q.get("subject_category")).lower() == subj_cat.lower() or str(q.get("subject_category", "General")).lower() == "general")
+            _normalise_subject_category(q.get("subject_category")) == subj_cat
         ]
+        general_questions = [
+            q for q in questions
+            if str(q.get("category")).lower() == config["category"].lower() and
+            _normalise_subject_category(q.get("subject_category")) == "General"
+        ]
+        rng.shuffle(department_questions)
+        rng.shuffle(general_questions)
+        category_questions = department_questions + general_questions
+
         if len(category_questions) < config["question_count"]:
             # Fill up with other questions from the same category if department specific count is insufficient
             extra_questions = [
                 q for q in questions
                 if str(q.get("category")).lower() == config["category"].lower() and q not in category_questions
             ]
+            rng.shuffle(extra_questions)
             category_questions.extend(extra_questions)
             
         if category_questions:
-            rng.shuffle(category_questions)
             selected = category_questions[: config["question_count"]]
         else:
             selected = []
@@ -172,7 +202,8 @@ def build_assessment_session(student_id: str) -> Dict[str, Any]:
                     {
                         "id": q["id"],
                         "prompt": q["prompt"],
-                        "options": q.get("options", []),
+                        "options": _shuffle_options_for_question(q, rng),
+                        "subject_category": q.get("subject_category", "General"),
                         "source": q.get("source", ""),
                     }
                     for q in selected
