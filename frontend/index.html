@@ -2079,7 +2079,7 @@ function validateTransition(dest){
    
   if (['assessment-hub','aptitude-test','cognitive-test','personality-test','psychometric-test','processing'].includes(dest)) {
     const targetLevel = getTargetUploadLevel();
-    if (!APP.uploaded.includes(targetLevel)) {
+    if (targetLevel && !APP.uploaded.includes(targetLevel)) {
       showErr('Please enter and save your '+targetLevel+' results first.');
       G('profile-upload');
       return false;
@@ -2245,7 +2245,7 @@ function getTargetUploadLevel() {
   const current = APP.school.classLevel || 'SSS 1';
   if (current === 'SSS 2') return 'SSS 1';
   if (current === 'SSS 3') return 'SSS 2';
-  return 'SSS 1';
+  return null; // SSS 1 students don't need prior results
 }
 
 function renderUploadSlots(){
@@ -2256,7 +2256,7 @@ function renderUploadSlots(){
   const targetLevel = getTargetUploadLevel();
   const dept = APP.school.dept || 'Science';
   const hasGrades = Object.keys(APP.manualGrades || {}).length > 0;
-  const isSaved = APP.uploaded.includes(targetLevel);
+  const isSaved = targetLevel ? APP.uploaded.includes(targetLevel) : true; // SSS1 always treated as ready
 
   let html = `
     <div class="card-g card" style="margin-bottom:12px;padding:12px 16px;">
@@ -2366,16 +2366,16 @@ function clearManualGrades() {
 async function submitManualGrades() {
   const studentId = APP.user.email || 'guest';
   if(studentId==='guest'){ showErr('Please sign in to save results'); G('login'); return; }
-  const targetLevel = getTargetUploadLevel();
+  const targetLevel = getTargetUploadLevel() || APP.school.classLevel || 'SSS 1';
   try {
     const payload = { student_id: studentId, level: targetLevel, subject_grades: APP.subjectGrades, manual_grades: APP.manualGrades || {}, file_grades: APP.fileUploadedGrades || {} };
     const res = await fetch(API_BASE_URL + '/save_results', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
     const j = await res.json();
     if(j && (j.status==='success' || j.success)){
-      T('Grades saved successfully');
+      T('Grades saved! Taking you to assessments...');
       if(!APP.uploaded.includes(targetLevel)) APP.uploaded.push(targetLevel);
       await fetch(API_BASE_URL + '/update_profile', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student_id: studentId, uploaded_results: JSON.stringify(payload) }) });
-      renderUploadSlots();
+      setTimeout(() => G('assessment-hub'), 1200);
     } else {
       T('Failed to save grades');
     }
