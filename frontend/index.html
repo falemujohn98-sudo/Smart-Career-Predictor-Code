@@ -12,6 +12,8 @@
 <title>ACALINE</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="config.js"></script>
 <script src="script.js"></script>
 <style>
@@ -924,6 +926,17 @@ const API_BASE_URL = isLocalEnv
   ? (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:' ? window.location.origin : 'http://127.0.0.1:8000') 
   : "https://smart-career-predictor-code.onrender.com";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDb9OtgSq6YkEXFO90jGv4ftlikCat8C3s",
+  authDomain: "careeriq-d0ce1.firebaseapp.com",
+  projectId: "careeriq-d0ce1",
+  storageBucket: "careeriq-d0ce1.firebasestorage.app",
+  messagingSenderId: "1029516678097",
+  appId: "1:1029516678097:web:ee47c33ec5f07550c606f0"
+};
+firebase.initializeApp(firebaseConfig);
+const firebaseAuth = firebase.auth();
+
 const APP = {
   user: { name:'', email:'', phone:'', dob:'', gender:'', password:'' },
   school: { name:'', type:'', state:'', classLevel:'', dept:'', lang:'English' },
@@ -1379,10 +1392,13 @@ async function handleLogin() {
   }
   
   try {
+    const userCredential = await firebaseAuth.signInWithEmailAndPassword(em.value.trim(), pw.value);
+    const idToken = await userCredential.user.getIdToken();
+
     const res = await fetch(API_BASE_URL + '/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: em.value.trim(), password: pw.value })
+      body: JSON.stringify({ id_token: idToken })
     });
     if (!res.ok) {
       const err = await res.json();
@@ -1441,7 +1457,12 @@ async function handleLogin() {
     const nextScreen = APP.school.name && APP.school.dept ? 'my-profile' : 'profile-basic';
     G(nextScreen);
   } catch (e) {
-    showErr('Server connection failed. Try again.');
+    console.error(e);
+    if (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') {
+      showErr('Invalid email or password');
+    } else {
+      showErr('Server connection failed. Try again.');
+    }
   }
 }
 
@@ -1479,13 +1500,15 @@ async function handleSignup() {
   const gender = genderEl.querySelector('.glbl').textContent;
   
   try {
+    const userCredential = await firebaseAuth.createUserWithEmailAndPassword(emailI.value.trim(), pwI.value);
+    const idToken = await userCredential.user.getIdToken();
+
     const res = await fetch(API_BASE_URL + '/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        id_token: idToken,
         name: nameI.value.trim(),
-        email: emailI.value.trim(),
-        password: pwI.value,
         phone: phoneI.value.trim(),
         dob: dobI.value,
         gender: gender
@@ -1515,7 +1538,14 @@ async function handleSignup() {
     T('Account created successfully!');
     G('profile-basic');
   } catch (e) {
-    showErr('Server connection failed. Try again.');
+    console.error(e);
+    if (e.code === 'auth/email-already-in-use') {
+      showErr('A user with this email already exists.');
+    } else if (e.code === 'auth/weak-password') {
+      showErr('Password is too weak.');
+    } else {
+      showErr('Server connection failed. Try again.');
+    }
   }
 }
 

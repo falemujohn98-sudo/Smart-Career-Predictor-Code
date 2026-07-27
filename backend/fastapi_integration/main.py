@@ -23,7 +23,9 @@ from backend.questions_engine.assessment_engine import (
     db_get_student,
     db_update_student_profile,
     grade_answers,
-    save_assessment
+    save_assessment,
+    hash_password,
+    verify_password,
 )
 from backend.gemini_llm.gemini_refine import align_prediction_with_department, gemini_final_prediction
 from backend.ml_models.tests.predict import predict_career   # Fixed import
@@ -95,7 +97,7 @@ def signup(data: SignupRequest):
         "id": data.email,
         "name": data.name,
         "email": data.email,
-        "password": data.password,
+        "password": hash_password(data.password),
         "phone": data.phone,
         "dob": data.dob,
         "gender": data.gender,
@@ -116,7 +118,7 @@ def signup(data: SignupRequest):
 @app.post("/login")
 def login(data: LoginRequest):
     student = db_get_student_by_email(data.email)
-    if not student or student.get("password") != data.password:
+    if not student or not verify_password(data.password, student.get("password", "")):
         raise HTTPException(status_code=400, detail="Invalid email or password.")
     
     student_profile = dict(student)
