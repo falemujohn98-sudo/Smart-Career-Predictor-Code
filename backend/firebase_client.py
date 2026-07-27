@@ -9,14 +9,7 @@ CRED_PATH = BASE_DIR / "careeriq-d0ce1-firebase-adminsdk.json"
 _app = None
 _db = None
 
-
 def get_db():
-    from firebase_admin import auth
-    try:
-        decoded_token = auth.verify_id_token(id_token)
-        return decoded_token
-    except Exception as e:
-        raise ValueError(f"Invalid or expired ID token: {e}")
     global _app, _db
     if _db is not None:
         return _db
@@ -29,3 +22,11 @@ def get_db():
 
     _db = firestore.client()
     return _db
+
+def verify_id_token(id_token: str):
+    from firebase_admin import auth
+    try:
+        decoded_token = auth.verify_id_token(id_token)
+        return decoded_token
+    except Exception as e:
+        raise ValueError(f"Invalid or expired ID token: {e}")
