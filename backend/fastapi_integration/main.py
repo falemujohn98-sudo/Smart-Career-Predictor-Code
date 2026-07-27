@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 
+from backend.firebase_client import verify_id_token
 from backend.questions_engine.assessment_engine import (
     build_assessment_session,
     get_assessment_history,
@@ -62,17 +63,15 @@ def health_check():
 
 # ====================== Existing Routes (unchanged) ======================
 class SignupRequest(BaseModel):
+   class SignupRequest(BaseModel):
+    id_token: str
     name: str
-    email: str
-    password: str
     phone: str
     dob: str
     gender: str
 
-
 class LoginRequest(BaseModel):
-    email: str
-    password: str
+    id_token: str
 
 
 class ProfileUpdateRequest(BaseModel):
@@ -93,11 +92,19 @@ class SubmissionRequest(BaseModel):
 
 @app.post("/signup")
 def signup(data: SignupRequest):
+    try:
+        decoded = verify_id_token(data.id_token)
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+    email = decoded.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Token did not contain an email address.")
+
     student_data = {
-        "id": data.email,
+        "id": email,
         "name": data.name,
-        "email": data.email,
-        "password": hash_password(data.password),
+        "email": email,
         "phone": data.phone,
         "dob": data.dob,
         "gender": data.gender,
@@ -112,19 +119,26 @@ def signup(data: SignupRequest):
     success = db_create_student(student_data)
     if not success:
         raise HTTPException(status_code=400, detail="A user with this email already exists.")
-    return {"status": "success", "message": "User registered successfully.", "student_id": data.email}
-
+    return {"status": "success", "message": "User registered successfully.", "student_id": email}
 
 @app.post("/login")
 def login(data: LoginRequest):
-    student = db_get_student_by_email(data.email)
-    if not student or not verify_password(data.password, student.get("password", "")):
-        raise HTTPException(status_code=400, detail="Invalid email or password.")
-    
+    try:
+        decoded = verify_id_token(data.id_token)
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+    email = decoded.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Token did not contain an email address.")
+
+    student = db_get_student_by_email(email)
+    if not student:
+        raise HTTPException(status_code=400, detail="No account found for this user.")
+
     student_profile = dict(student)
     student_profile.pop("password", None)
     return {"status": "success", "student": student_profile}
-
 
 @app.post("/update_profile")
 def update_profile(data: ProfileUpdateRequest):

@@ -11,6 +11,12 @@ _db = None
 
 
 def get_db():
+    from firebase_admin import auth
+    try:
+        decoded_token = auth.verify_id_token(id_token)
+        return decoded_token
+    except Exception as e:
+        raise ValueError(f"Invalid or expired ID token: {e}")
     global _app, _db
     if _db is not None:
         return _db
