@@ -922,9 +922,9 @@ const isLocalEnv = window.location.hostname === 'localhost' ||
                    window.location.protocol === 'file:' || 
                    !window.location.hostname;
 
-const API_BASE_URL = isLocalEnv 
-  ? (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:' ? window.location.origin : 'http://127.0.0.1:8000') 
-  : "https://smart-career-predictor-code.onrender.com";
+const API_BASE_URL = isLocalEnv
+  ? (window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:' ? window.location.origin : 'http://127.0.0.1:8000')
+  : "https://careeriq-backend-0h68.onrender.com";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDb9OtgSq6YkEXFO90jGv4ftlikCat8C3s",
