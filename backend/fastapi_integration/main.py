@@ -63,7 +63,6 @@ def health_check():
 
 # ====================== Existing Routes (unchanged) ======================
 class SignupRequest(BaseModel):
-   class SignupRequest(BaseModel):
     id_token: str
     name: str
     phone: str
